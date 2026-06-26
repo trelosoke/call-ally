@@ -19,3 +19,21 @@ function FormCallItem(name, smallDesc, fullDesc, dueDay, dueMonth, dueYear) {
     this.dueMonth = dueMonth;
     this.dueYear = dueYear;
 }
+
+const newCallButton = document.getElementById('new-call');
+
+function openForm() {
+    callForm.classList.remove('hidden');
+}
+
+function closeForm() {
+    callForm.classList.add('hidden');
+}
+
+newCallButton.addEventListener('click', () => {
+    if (callForm.classList.contains('hidden')) {
+        openForm();
+    } else {
+        closeForm();
+    }
+});
