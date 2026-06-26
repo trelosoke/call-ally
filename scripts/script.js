@@ -27,10 +27,12 @@ function FormCallItem(name, smallDesc, fullDesc, dueDay, dueMonth, dueYear, time
 const newCallButton = document.getElementById('new-call');
 
 function openForm() {
+    saveCall.disabled = false;
     callForm.classList.remove('hidden');
 }
 
 function closeForm() {
+    saveCall.disabled = true;
     callForm.classList.add('hidden');
 }
 
@@ -48,6 +50,9 @@ const cancelCall = callForm.querySelector('#cancel-call');
 callForm.addEventListener('submit', (e) => {
     //prevent page reload for JS behavior implementation
     e.preventDefault();
+    if (callForm.classList.contains('hidden')) {
+        return;
+    }
 
     //priority is captured at the moment of submit to ensure the radio is selected
     const formPrior = callForm.querySelector('input[name="prior"]:checked');
