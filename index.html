@@ -16,21 +16,23 @@
         <section class="new-call-form">
             <button class="new-call" id="new-call">Novo chamado</button>
             <form class="call-form" id="call-form" action="" method="POST">
+                <h2>Novo Chamado</h2>
                 <label for="name">Nome:</label><input type="text" name="name" id="name" required>
                 <label for="descript">Pequena descrição</label><input type="text" name="descript" id="descript" required>
                 <label for="full-descript">Descrição detalhada</label><textarea name="full-descript" id="full-descript" required></textarea>
                 
-                <h2>Vencimento:</h2>
+                <h3>Vencimento:</h3>
                 <label for="day">Dia:</label><input type="number" name="day" id="day" required>
                 <label for="month">Mês:</label><input type="number" name="month" id="month" required>
                 <label for="year">Ano:</label><input type="number" name="year" id="year" required>
+                <label for="time">Horário:</label><input type="time" name="time" id="time" required>
 
-                <h2>Prioridade</h2>
+                <h3>Prioridade</h3>
                 <input type="radio" name="prior" id="prior1" value="I" required>
                 <input type="radio" name="prior" id="prior2" value="II" required>
                 <input type="radio" name="prior" id="prior3" value="III" required>
 
-                <h2>Adicionar / tags</h2>
+                <h3>Adicionar / tags</h3>
                 <button class="new-tag" id="new-tag">+</button>
 
                 <button class="cancel-call" id="cancel-call">CANCELAR</button>
