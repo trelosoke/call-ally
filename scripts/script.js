@@ -7,10 +7,11 @@ const fullDesc = callForm.querySelector('#full-descript');
 const formDueDay = callForm.querySelector('#day');
 const formDueMonth = callForm.querySelector('#month');
 const formDueYear = callForm.querySelector('#year');
+const formTime = callForm.querySelector('#time');
 
 // Construtor que cria um objeto de um Item de Chamado
 // Os parâmetros informados são os valores de cada entrada no elemento
-function FormCallItem(name, smallDesc, fullDesc, dueDay, dueMonth, dueYear) {
+function FormCallItem(name, smallDesc, fullDesc, dueDay, dueMonth, dueYear, time) {
     //utiliza randomUUID para gerar um identificador exclusivo
     this.id = crypto.randomUUID();
     
@@ -20,6 +21,7 @@ function FormCallItem(name, smallDesc, fullDesc, dueDay, dueMonth, dueYear) {
     this.dueDay = dueDay;
     this.dueMonth = dueMonth;
     this.dueYear = dueYear;
+    this.formTime = time;
 }
 
 const newCallButton = document.getElementById('new-call');
@@ -55,7 +57,8 @@ callForm.addEventListener('submit', (e) => {
         fullDesc.value, 
         formDueDay.value, 
         formDueMonth.value, 
-        formDueYear.value
+        formDueYear.value,
+        formTime.value
     );
 
     formInfo.prior = formPrior.value;
