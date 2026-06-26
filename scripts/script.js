@@ -1,3 +1,5 @@
+const calls = [];
+
 const callForm = document.getElementById('call-form');
 const formName = callForm.querySelector('#name');
 const smallDesc = callForm.querySelector('#descript');
@@ -36,4 +38,29 @@ newCallButton.addEventListener('click', () => {
     } else {
         closeForm();
     }
+});
+
+const saveCall = callForm.querySelector('input[type=submit]');
+
+callForm.addEventListener('submit', (e) => {
+    //prevent page reload for JS behavior implementation
+    e.preventDefault();
+
+    //priority is captured at the moment of submit to ensure the radio is selected
+    const formPrior = callForm.querySelector('input[name="prior"]:checked');
+    
+    const formInfo = new FormCallItem(
+        formName.value, 
+        smallDesc.value, 
+        fullDesc.value, 
+        formDueDay.value, 
+        formDueMonth.value, 
+        formDueYear.value
+    );
+
+    formInfo.prior = formPrior.value;
+
+    calls.push(formInfo);
+    callForm.reset();
+    callForm.classList.add('hidden');
 });
