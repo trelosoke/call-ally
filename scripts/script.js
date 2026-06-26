@@ -43,6 +43,7 @@ newCallButton.addEventListener('click', () => {
 });
 
 const saveCall = callForm.querySelector('input[type=submit]');
+const cancelCall = callForm.querySelector('#cancel-call');
 
 callForm.addEventListener('submit', (e) => {
     //prevent page reload for JS behavior implementation
@@ -66,4 +67,8 @@ callForm.addEventListener('submit', (e) => {
     calls.push(formInfo);
     callForm.reset();
     callForm.classList.add('hidden');
+});
+
+cancelCall.addEventListener('click', () => {
+    closeForm();
 });
