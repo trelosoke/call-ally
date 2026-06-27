@@ -17,7 +17,7 @@
             <button class="new-call" id="new-call">Novo chamado</button>
             <form class="call-form" id="call-form" action="" method="POST">
                 <h2>Novo Chamado</h2>
-                <label for="name">Nome:</label><input type="text" name="name" id="name" required>
+                <label for="name">Nome:</label><input type="text" name="name" id="name" required maxlength="">
                 <label for="descript">Pequena descrição</label><input type="text" name="descript" id="descript" required>
                 <label for="full-descript">Descrição detalhada</label><textarea name="full-descript" id="full-descript" required></textarea>
                 
@@ -34,9 +34,15 @@
 
                 <h3>Adicionar / tags</h3>
                 <button class="new-tag" id="new-tag">+</button>
+                <div class="tag-menu hidden" id="tag-menu">
+                    <label for="tag-name"><h3>Nome da tag:</h3></label><input type="text" name="tag-name" id="tag-name">
+                    <label for="tag-color"><h3>Cor:</h3></label><input type="color" name="tag-color" id="tag-color">
+                </div>
 
-                <button type="reset" class="cancel-call" id="cancel-call">CANCELAR</button>
-                <input type="submit" value="SALVAR">
+                <section class="form-action">
+                    <button type="reset" class="cancel-call" id="cancel-call">CANCELAR</button>
+                    <input type="submit" value="SALVAR">
+                </section>
             </form>
         </section>
 
@@ -44,6 +50,6 @@
 
         </section>
     </main>
-    <script src="scripts/script.js"></script>
+    <script src="scripts/form-call.js"></script>
 </body>
 </html>
