@@ -18,3 +18,25 @@ newTagButton.addEventListener('click', (e) => {
         tagMenu.classList.add('hidden');
     }
 });
+
+const tagName = document.querySelector('#tag-name');
+const tagColor = document.querySelector('#tag-color');
+const tagSubmit = document.querySelector('#tag-submit');
+
+let tags = [];
+
+function TagData(name, color) {
+    this.name = name;
+    this.color = color;
+}
+
+tagSubmit.addEventListener('click', (e) => {
+    e.preventDefault();
+    const name = tagName.value.trim();
+    const color = tagColor.value;
+
+    if (name) {
+        const tagInfo = new TagData(name, color);
+        tags.push(tagInfo);
+    }
+});
