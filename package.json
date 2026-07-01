@@ -1,0 +1,27 @@
+{
+  "name": "call-ally",
+  "version": "1.0.0",
+  "description": "CallAlly é um site que permite a criação e gestão de chamados, seja de tarefas ou problemas a resolver no dia a dia.",
+  "keywords": [
+    "helpdesk",
+    "tickets",
+    "management",
+    "typescript",
+    "dom"
+  ],
+  "homepage": "https://github.com/trelosoke/call-ally#readme",
+  "bugs": {
+    "url": "https://github.com/trelosoke/call-ally/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trelosoke/call-ally.git"
+  },
+  "license": "MIT",
+  "author": "Diogo da Silva <diogoviniciussilva.dev@gmail.com>",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  }
+}
