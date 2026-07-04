@@ -1,13 +1,23 @@
 const calls = [];
 
-const callForm = document.getElementById('call-form');
-const formName = callForm.querySelector('#name');
-const smallDesc = callForm.querySelector('#descript');
-const fullDesc = callForm.querySelector('#full-descript');
-const formDueDay = callForm.querySelector('#day');
-const formDueMonth = callForm.querySelector('#month');
-const formDueYear = callForm.querySelector('#year');
-const formTime = callForm.querySelector('#time');
+const callForm = document.getElementById('call-form') as HTMLFormElement;
+const formName = callForm.querySelector('#name') as HTMLInputElement;
+const smallDesc = callForm.querySelector('#descript') as HTMLInputElement;
+const fullDesc = callForm.querySelector('#full-descript') as HTMLTextAreaElement;
+const formDueDay = callForm.querySelector('#day') as HTMLInputElement;
+const formDueMonth = callForm.querySelector('#month') as HTMLInputElement;
+const formDueYear = callForm.querySelector('#year') as HTMLInputElement;
+const formTime = callForm.querySelector('#time') as HTMLInputElement;
+
+interface FormCallItem {
+    name: string;
+    smallDesc: string;
+    fullDesc: string;
+    dueDay: number;
+    dueMonth: number;
+    dueYear: number;
+    formTime: number;
+}
 
 // Construtor que cria um objeto de um Item de Chamado
 // Os parâmetros informados são os valores de cada entrada no elemento
