@@ -1,1 +1,2 @@
-console.log('test');
+import './features/form/form-call';
+import './features/form/tags/tag-manager';
