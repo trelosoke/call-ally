@@ -1,4 +1,34 @@
-const calls = [];
+// Determina valores aceitáveis para 'prior' na classe de Item de Chamado 
+enum Priority {
+    I = "I",
+    II = "II",
+    III = "III"
+}
+
+// Cria um objeto de um Item de Chamado
+// Os parâmetros informados na instância são os valores de cada entrada no elemento
+class FormCallItem {
+    //utiliza randomUUID para gerar um identificador exclusivo
+    #id: string = crypto.randomUUID();
+
+    constructor(
+        public name: string, 
+        public smallDesc: string, 
+        public fullDesc: string, 
+        public dueDay: string, 
+        public dueMonth: string, 
+        public dueYear: string, 
+        public formTime: string,
+        public prior: Priority
+    ) {}
+
+    get id(): string {
+        return this.#id;
+    }
+    
+}
+
+const calls: FormCallItem[] = [];
 
 const callForm = document.getElementById('call-form') as HTMLFormElement;
 const formName = callForm.querySelector('#name') as HTMLInputElement;
@@ -9,53 +39,27 @@ const formDueMonth = callForm.querySelector('#month') as HTMLInputElement;
 const formDueYear = callForm.querySelector('#year') as HTMLInputElement;
 const formTime = callForm.querySelector('#time') as HTMLInputElement;
 
-interface FormCallItem {
-    name: string;
-    smallDesc: string;
-    fullDesc: string;
-    dueDay: number;
-    dueMonth: number;
-    dueYear: number;
-    formTime: number;
-}
+const saveCall = callForm.querySelector('input[type=submit]') as HTMLInputElement;
+const cancelCall = callForm.querySelector('#cancel-call') as HTMLButtonElement;
+const newCallButton = document.getElementById('new-call') as HTMLButtonElement;
 
-// Construtor que cria um objeto de um Item de Chamado
-// Os parâmetros informados são os valores de cada entrada no elemento
-function FormCallItem(name, smallDesc, fullDesc, dueDay, dueMonth, dueYear, time) {
-    //utiliza randomUUID para gerar um identificador exclusivo
-    this.id = crypto.randomUUID();
-    
-    this.name = name;
-    this.smallDesc = smallDesc;
-    this.fullDesc = fullDesc;
-    this.dueDay = dueDay;
-    this.dueMonth = dueMonth;
-    this.dueYear = dueYear;
-    this.formTime = time;
-}
-
-const newCallButton = document.getElementById('new-call');
-
-function openForm() {
+function openForm(): void {
     saveCall.disabled = false;
     callForm.classList.remove('hidden');
 }
 
-function closeForm() {
+function closeForm(): void {
     saveCall.disabled = true;
     callForm.classList.add('hidden');
 }
 
-newCallButton.addEventListener('click', () => {
+newCallButton.addEventListener('click', (): void => {
     if (callForm.classList.contains('hidden')) {
         openForm();
     } else {
         closeForm();
     }
 });
-
-const saveCall = callForm.querySelector('input[type=submit]');
-const cancelCall = callForm.querySelector('#cancel-call');
 
 callForm.addEventListener('submit', (e) => {
     //prevent page reload for JS behavior implementation
@@ -65,7 +69,7 @@ callForm.addEventListener('submit', (e) => {
     }
 
     //priority is captured at the moment of submit to ensure the radio is selected
-    const formPrior = callForm.querySelector('input[name="prior"]:checked');
+    const formPrior = callForm.querySelector('input[name="prior"]:checked') as HTMLInputElement;
     
     const formInfo = new FormCallItem(
         formName.value, 
@@ -74,16 +78,15 @@ callForm.addEventListener('submit', (e) => {
         formDueDay.value, 
         formDueMonth.value, 
         formDueYear.value,
-        formTime.value
+        formTime.value,
+        formPrior.value as Priority
     );
-
-    formInfo.prior = formPrior.value;
 
     calls.push(formInfo);
     callForm.reset();
     callForm.classList.add('hidden');
 });
 
-cancelCall.addEventListener('click', () => {
+cancelCall.addEventListener('click', (): void => {
     closeForm();
 });
