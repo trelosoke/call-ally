@@ -21,6 +21,7 @@ class CallFormItem {
         public dueMonth: string, 
         public dueYear: string, 
         public formTime: string,
+        public prior: Priority,
         public tags: TagData[]
     ) {}
 
@@ -100,6 +101,7 @@ callForm.addEventListener('submit', (e): void => {
         formDueMonth.value, 
         formDueYear.value,
         formTime.value,
+        formPrior.value as Priority,
         tags
     );
 
