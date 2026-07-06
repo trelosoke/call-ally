@@ -1,4 +1,4 @@
-import { tags, TagData } from './tags/tag-manager';
+import { tags, TagData, toggleTagMenu } from './tags/tag-manager';
 
 // Determina valores aceitáveis para 'prior' na classe de Item de Chamado 
 enum Priority {
@@ -102,13 +102,19 @@ callForm.addEventListener('submit', (e): void => {
         formDueYear.value,
         formTime.value,
         formPrior.value as Priority,
-        tags
+        Array.from(tags)
     );
 
     calls.push(formInfo);
-    tags.length = 0;
+
+    if (import.meta.env.DEV) {
+        (window as any).__debug = { calls, formInfo, tags };
+    }
+
     callForm.reset();
-    callForm.classList.add('hidden');
+    tags.length = 0;
+    toggleTagMenu();
+    closeForm();
 });
 
 cancelCall.addEventListener('click', (): void => {

@@ -12,18 +12,21 @@ export class TagData {
 const tagMenu = document.querySelector('#tag-menu') as HTMLDivElement;
 const newTagButton = document.querySelector('#new-tag') as HTMLButtonElement;
 
-newTagButton.addEventListener('click', (e): void => {
-    // Prevent button submit for JS behavior implementation
-    e.preventDefault();
-
-    // The code below can be replace with the classList 'toggle()' method
-    // But for now, I'll keep that just to ensure the class exists at the
-    // Page loading.
+// The code below can be replace with the classList 'toggle()' method
+// But for now, I'll keep that just to ensure the class exists at the
+// Page loading.
+export function toggleTagMenu(): void{
     if (isTagMenuClosed()) {
         tagMenu.classList.remove('hidden');
     } else {
         tagMenu.classList.add('hidden');
     }
+}
+
+newTagButton.addEventListener('click', (e): void => {
+    // Prevent button submit for JS behavior implementation
+    e.preventDefault();
+    toggleTagMenu();
 });
 
 const tagName = document.querySelector('#tag-name') as HTMLInputElement;
