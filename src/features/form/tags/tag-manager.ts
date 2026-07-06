@@ -1,11 +1,18 @@
-const tagMenu = document.querySelector('#tag-menu');
-const newTagButton = document.querySelector('#new-tag');
-
-function isTagMenuClosed() {
+function isTagMenuClosed(): boolean {
     return tagMenu.classList.contains('hidden');
 }
 
-newTagButton.addEventListener('click', (e) => {
+export class TagData {
+    constructor(
+        public name: string,
+        public color: string 
+    ){}
+}
+
+const tagMenu = document.querySelector('#tag-menu') as HTMLDivElement;
+const newTagButton = document.querySelector('#new-tag') as HTMLButtonElement;
+
+newTagButton.addEventListener('click', (e): void => {
     // Prevent button submit for JS behavior implementation
     e.preventDefault();
 
@@ -19,18 +26,13 @@ newTagButton.addEventListener('click', (e) => {
     }
 });
 
-const tagName = document.querySelector('#tag-name');
-const tagColor = document.querySelector('#tag-color');
-const tagSubmit = document.querySelector('#tag-submit');
+const tagName = document.querySelector('#tag-name') as HTMLInputElement;
+const tagColor = document.querySelector('#tag-color') as HTMLInputElement;
+const tagSubmit = document.querySelector('#tag-submit')as HTMLButtonElement;
 
-let tags = [];
+export let tags: TagData[] = [];
 
-function TagData(name, color) {
-    this.name = name;
-    this.color = color;
-}
-
-tagSubmit.addEventListener('click', (e) => {
+tagSubmit.addEventListener('click', (e): void => {
     e.preventDefault();
     const name = tagName.value.trim();
     const color = tagColor.value;

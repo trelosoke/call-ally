@@ -1,3 +1,5 @@
+import { tags, TagData } from './tags/tag-manager';
+
 // Determina valores aceitáveis para 'prior' na classe de Item de Chamado 
 enum Priority {
     I = "I",
@@ -19,7 +21,7 @@ class CallFormItem {
         public dueMonth: string, 
         public dueYear: string, 
         public formTime: string,
-        public prior: Priority
+        public tags: TagData[]
     ) {}
 
     get id(): string {
@@ -61,14 +63,33 @@ newCallButton.addEventListener('click', (): void => {
     }
 });
 
-callForm.addEventListener('submit', (e) => {
-    //prevent page reload for JS behavior implementation
+// Retorna a função caso o elemento de No Tag Warning esteja visível
+// Caso contrário, mostra o elemento e o esconde após 6 segundos
+function noTagWarning(): void {
+    const warning = document.querySelector('#no-tag-warning') as HTMLDivElement;
+    if (!warning.classList.contains('hidden')) {
+        return;
+    }
+
+    warning.classList.remove('hidden');
+    setTimeout(() => {
+        warning.classList.add('hidden');
+    },6000);
+}
+
+callForm.addEventListener('submit', (e): void => {
+    // Previne o recarregamento da página para a implementação do comportamento do JS
     e.preventDefault();
     if (callForm.classList.contains('hidden')) {
         return;
     }
 
-    //priority is captured at the moment of submit to ensure the radio is selected
+    if (tags.length === 0){
+        noTagWarning();
+        return;
+    };
+
+    // O formPrior é capiturado no momento de submit para garantir que o input radio está selecionado
     const formPrior = callForm.querySelector('input[name="prior"]:checked') as HTMLInputElement;
     
     const formInfo = new CallFormItem(
@@ -79,10 +100,11 @@ callForm.addEventListener('submit', (e) => {
         formDueMonth.value, 
         formDueYear.value,
         formTime.value,
-        formPrior.value as Priority
+        tags
     );
 
     calls.push(formInfo);
+    tags.length = 0;
     callForm.reset();
     callForm.classList.add('hidden');
 });
