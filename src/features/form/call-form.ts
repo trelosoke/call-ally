@@ -110,6 +110,15 @@ function noTagWarning(): void {
     },6000);
 }
 
+function validatePriority(value: string): Priority {
+    if (Object.values(Priority).includes(value as Priority)) {
+        return value as Priority; 
+    }
+
+    console.warn(`Invalid priority value received: "${value}". Falling back to Priority.I`);
+    return Priority.I;
+}
+
 callForm.addEventListener('submit', (e): void => {
     // Previne o recarregamento da página para a implementação do comportamento do JS
     e.preventDefault();
@@ -133,7 +142,7 @@ callForm.addEventListener('submit', (e): void => {
         formDueMonth.value, 
         formDueYear.value,
         formTime.value,
-        formPrior.value as Priority,
+        validatePriority(formPrior.value),
         Array.from(tags)
     );
 
