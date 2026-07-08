@@ -12,6 +12,8 @@ enum Priority {
 class CallFormItem {
     //utiliza randomUUID para gerar um identificador exclusivo
     #id: string = crypto.randomUUID();
+    #creationDate = this.#formatCreationDate();
+    #creationTime = this.#formatCreationTime();
 
     constructor(
         public name: string, 
@@ -25,10 +27,40 @@ class CallFormItem {
         public tags: TagData[]
     ) {}
 
+    #formatCreationDate() {
+        const date = new Date();
+        const months: string[] = [
+            'jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.',
+            'jul.', 'ago.', 'set.', 'out.', 'nov', 'dez.'
+        ];
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = date.getMonth();
+        const year = String(date.getFullYear());
+
+        return `${day} de ${months[month]} de ${year}`;
+    }
+
+    #formatCreationTime() {
+        const time = new Date();
+
+        const hour = String(time.getHours()).padStart(2, '0');
+        const minutes = String(time.getMinutes()).padStart(2, '0');
+
+        return `${hour}:${minutes}`;
+    }
+
     get id(): string {
         return this.#id;
     }
-    
+
+    get creationDate(): string {
+        return this.#creationDate;
+    }
+
+    get creationTime(): string {
+        return this.#creationTime;
+    }
 }
 
 const calls: CallFormItem[] = [];
