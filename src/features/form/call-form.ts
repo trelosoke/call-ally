@@ -11,9 +11,9 @@ enum Priority {
 // Os parâmetros informados na instância são os valores de cada entrada no elemento
 class CallFormItem {
     //utiliza randomUUID para gerar um identificador exclusivo
-    #id: string = crypto.randomUUID();
-    #creationDate = this.#formatCreationDate();
-    #creationTime = this.#formatCreationTime();
+    #id: string;
+    #creationDate: string;
+    #creationTime: string;
 
     constructor(
         public name: string, 
@@ -25,7 +25,11 @@ class CallFormItem {
         public formTime: string,
         public prior: Priority,
         public tags: TagData[]
-    ) {}
+    ) {
+        this.#id = crypto.randomUUID()
+        this.#creationDate = this.#formatCreationDate();
+        this.#creationTime = this.#formatCreationTime();
+    }
 
     #formatCreationDate() {
         const date = new Date();
