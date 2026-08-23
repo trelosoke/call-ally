@@ -1,0 +1,39 @@
+import { useEffect, useState } from "react";
+import type { Call } from "./types/calls";
+import { listCalls } from "./services/calls-service";
+import CallForm from "./components/CallForm";
+
+function App() {
+    const [calls, setCalls] = useState<Call[]>([]);
+
+    useEffect(() => {
+        listCalls().then(setCalls);
+    }, []);
+
+    function handleCallCreated() {
+        listCalls().then(setCalls);
+    }
+
+    return (
+        <div>
+            <header>
+                <h1>CallAlly</h1>
+            </header>
+            <main>
+                <section>
+                    <h2>Novo Chamado</h2>
+                    <CallForm onCallCreated={handleCallCreated} />
+                    <p>Formulário de criação virá aqui</p>
+                </section>
+
+                <section>
+                    <h2>Chamados</h2>
+                    {/*Aqui vai a lista de chamados (ainda vazia)*/}
+                    <p>Lista de chamados virá aqui</p>
+                </section>
+            </main>
+        </div>
+    );
+}
+
+export default App;
