@@ -75,6 +75,7 @@ function CallForm({ onCallCreated }: CallFormProps) {
                 value={fullDesc}
                 onChange={e => setFullDesc(e.target.value)}
             />
+            {/* TODO: Add default value (e.g., today + 7 days) and handle timezone normalization (client local -> UTC). */}
             <input type="datetime-local"
                 value={dueDate}
                 onChange={e => setDueDate(e.target.value)}
