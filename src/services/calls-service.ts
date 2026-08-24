@@ -15,7 +15,7 @@ let callsMock: Call[] = [
 export function listCalls() {
     return new Promise<Call[]>((resolve) => {
         setTimeout(() => {
-            resolve(callsMock);
+            resolve([...callsMock]);
         }, 1000);
     });
 }

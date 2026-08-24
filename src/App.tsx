@@ -29,7 +29,6 @@ function App() {
                 <section>
                     <h2>Chamados</h2>
                     <CallList items={calls}/>
-                    <p>Lista de chamados virá aqui</p>
                 </section>
             </main>
         </div>
