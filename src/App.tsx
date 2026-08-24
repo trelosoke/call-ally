@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Call } from "./types/calls";
 import { listCalls } from "./services/calls-service";
 import CallForm from "./components/CallForm";
+import CallList from "./components/CallList";
 
 function App() {
     const [calls, setCalls] = useState<Call[]>([]);
@@ -23,12 +24,11 @@ function App() {
                 <section>
                     <h2>Novo Chamado</h2>
                     <CallForm onCallCreated={handleCallCreated} />
-                    <p>Formulário de criação virá aqui</p>
                 </section>
 
                 <section>
                     <h2>Chamados</h2>
-                    {/*Aqui vai a lista de chamados (ainda vazia)*/}
+                    <CallList items={calls}/>
                     <p>Lista de chamados virá aqui</p>
                 </section>
             </main>
