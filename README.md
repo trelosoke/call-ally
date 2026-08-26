@@ -1,6 +1,6 @@
 <h1 align="center">CallAlly</h1>
  
-<p align="center">CallAlly is a task management tool where you can organize tickets using tags and see updates reflected immediately on the interface.</p>
+<p align="center">CallAlly is a ticket/call management tool where you can organize tasks and issues using tags, with updates reflected immediately on the interface.</p>
 
 <p align="center">Leia este README em <a href="#português">Português</a>.</p>
 
@@ -34,6 +34,8 @@
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" width="40" height="40" />
 </p>
 
+> Now running in a **local server**, with **GET** and **POST** working methods. Check [Running the Backend](#-running-the-backend) to see how to run.
+
 ### Tools & Platforms
 <p align="left">
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" width="40" height="40" />
@@ -63,7 +65,7 @@
    npm install
    ```
 
-### Running the Frontend
+### 🖌 Running the Frontend
 
 Start the development server:
 
@@ -73,16 +75,84 @@ npm run dev
 
 The application will be available at [`http://localhost:5173`](http://localhost:5173).
 
-### Testing the Application
+---
 
-- Open your browser and navigate to `http://localhost:5173`
-- Create a new call by filling in the form and clicking **Criar Chamado**
-- Add tags using the tag input and the color picker
-- Verify that new calls appear instantly in the list below
+### 🔧 Running the Backend
 
-> **Note:** The current version uses a mock in-memory service for testing, so data is lost on page refresh. A backend with persistent storage is coming soon.
+Open a **second terminal** (beside the frontend one) and start the server:
+
+```bash
+node backend/server.js
+```
+
+> **Tip:** Use `nodemon` for automatic restarts during development:
+> ```bash
+> npm install -g nodemon   # install once
+> nodemon backend/server.js
+> ```
+
+The server will be available at [`http://localhost:3000`](http://localhost:3000).
 
 ---
+
+### 📡 Testing the API (Backend)
+
+You can test the backend endpoints using a REST client (like **Thunder Client** inside VSCode, **Insomnia**, or **Postman**) or using `curl` in the terminal.
+
+#### GET /calls – List all calls
+
+**Thunder Client / Insomnia:**
+- Method: `GET`
+- URL: `http://localhost:3000/calls`
+- No body needed.
+
+**curl:**
+```bash
+curl http://localhost:3000/calls
+```
+
+**Expected response:** A JSON array (even if empty).
+
+---
+
+#### POST /calls – Create a new call
+
+**Thunder Client / Insomnia:**
+- Method: `POST`
+- URL: `http://localhost:3000/calls`
+- Headers: `Content-Type: application/json`
+- Body (JSON):
+```json
+{
+  "title": "Test call",
+  "smallDesc": "Short description",
+  "fullDesc": "Full detailed description",
+  "dueDate": "2026-09-15T14:30:00",
+  "priority": "high",
+  "tags": [{ "name": "Urgent", "color": "#ff0000" }]
+}
+```
+
+**curl:**
+```bash
+curl -X POST http://localhost:3000/calls \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Test call","smallDesc":"Short description","fullDesc":"Full detailed description","dueDate":"2026-09-15T14:30:00","priority":"high","tags":[{"name":"Urgent","color":"#ff0000"}]}'
+```
+
+**Expected response:** The created call object, including a generated `id` and the fields you sent.
+
+---
+
+### 🔗 Full Integration Test
+
+1. Run both the frontend (`npm run dev`) and backend (`node backend/server.js`).
+2. Open the frontend at `http://localhost:5173`.
+3. Create a new call via the form.
+4. The call should appear in the list **without** refreshing the page.
+5. Refresh the page – the call should **still be there** (because the data comes from the server, not mock).
+
+> **Note:** The frontend uses a Vite proxy (`/api`) to avoid CORS issues. This means all requests to `/api/calls` are forwarded to `http://localhost:3000/calls`. You don't need to worry about CORS during development.
 
 ## Features
 
@@ -91,6 +161,7 @@ The application will be available at [`http://localhost:5173`](http://localhost:
 - **Real-time list updates** — The call list updates instantly as you create or modify items.
 - **Priority levels** — Assign low, medium, or high priority to your calls.
 - **Responsive layout** *(planned)* — Mobile-first design (in progress).
+- **Functional backend** — Data is stored on the local server (in-memory) and remains available while the server is running. Persistence will be added with a database.
 
 ---
 
@@ -98,6 +169,9 @@ The application will be available at [`http://localhost:5173`](http://localhost:
 
 ```
 call-ally/
+└─ .github/workflows
+   └─ ci.yml                  # Continuous Integration (CI) entry
+└─ backend/                   # REST API source code
 └─ src/                       # Application source code.
    ├─ components/             # Reusable React UI components.
    ├─ services/               # Data access layer (async mock API).
@@ -121,9 +195,11 @@ call-ally/
 |---------------|-------------|
 | `src/`        | All application source code lives here. |
 | `src/components/` | Reusable React UI pieces. Each component receives data via props and manages its own local state. |
-| `src/services/`   | Data access layer that abstracts where data comes from. UI never touches the source directly. Currently a mock with `setTimeout`; in the future it will use `fetch` against the backend. |
+| `src/services/`   | Data access layer that abstracts where data comes from. UI never touches the source directly. Currently uses `fetch` to communicate with the backend API. |
 | `src/styles/`     | Global CSS shared by the whole app. |
-| `src/types/`      | Domain types used everywhere. They define the contract between frontend and the future backend, so their shape must match what the API returns. |
+| `src/types/`      | Domain types used everywhere. They define the contract between frontend and the backend, so their shape must match what the API returns. |
+| `backend/`        | REST API source code. Contains the Express server, route definitions, and in‑memory data storage. This is the backend entry point for the application. |
+| `.github/workflows`        | CI/CD configuration. The `ci.yml` file defines the continuous integration pipeline, which runs type checks and builds on every push or pull request to the `main` branch. |
 
 ---
 
@@ -146,8 +222,8 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
 
 > Replace the in-memory array with a real Node.js server and PostgreSQL database. Quality and documentation tasks are being handled in parallel throughout this milestone. Due **Sep 21, 2026**.
 
-- [ ] [#7](https://github.com/trelosoke/call-ally/issues/7) Establish a Server with Basic Routing
-- [ ] [#8](https://github.com/trelosoke/call-ally/issues/8) Connect the Frontend to the Real Server
+- [x] [#7](https://github.com/trelosoke/call-ally/issues/7) Establish a Server with Basic Routing
+- [x] [#8](https://github.com/trelosoke/call-ally/issues/8) Connect the Frontend to the Real Server
 - [ ] [#9](https://github.com/trelosoke/call-ally/issues/9) Introduce Persistent Data Storage
 - [ ] [#10](https://github.com/trelosoke/call-ally/issues/10) Migrate Read Operations to Persistent Storage
 - [ ] [#11](https://github.com/trelosoke/call-ally/issues/11) Migrate Write Operations to Persistent Storage
@@ -207,6 +283,8 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" width="40" height="40" />
 </p>
 
+> Agora rodando em um *servidor local*, com métodos *GET* e *POST* funcionando. Veja [Executando o Backend](#-executando-o-backend) para saber como rodar.
+
 #### Ferramentas e Plataformas
 
 <p align="left">
@@ -237,7 +315,7 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
    npm install
    ```
 
-#### Executando o Frontend
+### 🖌 Executando o Frontend
 
 Inicie o servidor de desenvolvimento:
 
@@ -247,14 +325,84 @@ npm run dev
 
 A aplicação estará disponível em [`http://localhost:5173`](http://localhost:5173).
 
-#### Testando a Aplicação
+---
 
-- Abra o navegador e acesse `http://localhost:5173`
-- Crie um novo chamado preenchendo o formulário e clicando em **Criar Chamado**
-- Adicione tags usando o campo de texto e o seletor de cores
-- Verifique se novos chamados aparecem imediatamente na lista abaixo
+### 🔧 Executando o Backend
 
-> **Nota:** A versão atual utiliza um serviço mock em memória para testes, portanto os dados são perdidos ao atualizar a página. Um backend com armazenamento persistente está em desenvolvimento.
+Abra um **segundo terminal** (ao lado do frontend) e inicie o servidor:
+
+```bash
+node backend/server.js
+```
+
+> **Dica:** Use o `nodemon` para reinícios automáticos durante o desenvolvimento:
+> ```bash
+> npm install -g nodemon   # instale uma vez
+> nodemon backend/server.js
+> ```
+
+O servidor estará disponível em [`http://localhost:3000`](http://localhost:3000).
+
+---
+
+### 📡 Testando a API (Backend)
+
+Você pode testar os endpoints do backend usando um cliente REST (como o **Thunder Client** dentro do VSCode, **Insomnia** ou **Postman**) ou usando `curl` no terminal.
+
+#### GET /calls – Listar todos os chamados
+
+**Thunder Client / Insomnia:**
+- Método: `GET`
+- URL: `http://localhost:3000/calls`
+- Nenhum corpo (body) necessário.
+
+**curl:**
+```bash
+curl http://localhost:3000/calls
+```
+
+**Resposta esperada:** Um array JSON (mesmo que vazio).
+
+---
+
+#### POST /calls – Criar um novo chamado
+
+**Thunder Client / Insomnia:**
+- Método: `POST`
+- URL: `http://localhost:3000/calls`
+- Headers: `Content-Type: application/json`
+- Corpo (JSON):
+```json
+{
+  "title": "Chamado de teste",
+  "smallDesc": "Descrição curta",
+  "fullDesc": "Descrição completa e detalhada",
+  "dueDate": "2026-09-15T14:30:00",
+  "priority": "high",
+  "tags": [{ "name": "Urgente", "color": "#ff0000" }]
+}
+```
+
+**curl:**
+```bash
+curl -X POST http://localhost:3000/calls \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Chamado de teste","smallDesc":"Descrição curta","fullDesc":"Descrição completa e detalhada","dueDate":"2026-09-15T14:30:00","priority":"high","tags":[{"name":"Urgente","color":"#ff0000"}]}'
+```
+
+**Resposta esperada:** O objeto do chamado criado, incluindo um `id` gerado e os campos enviados.
+
+---
+
+### 🔗 Teste de Integração Completo
+
+1. Execute tanto o frontend (`npm run dev`) quanto o backend (`node backend/server.js`).
+2. Abra o frontend em `http://localhost:5173`.
+3. Crie um novo chamado através do formulário.
+4. O chamado deve aparecer na lista **sem** recarregar a página.
+5. Recarregue a página – o chamado deve **continuar lá** (porque os dados vêm do servidor, não do mock).
+
+> **Nota:** O frontend usa um proxy do Vite (`/api`) para evitar problemas de CORS. Isso significa que todas as requisições para `/api/calls` são encaminhadas para `http://localhost:3000/calls`. Você não precisa se preocupar com CORS durante o desenvolvimento.
 
 ---
 
@@ -265,6 +413,7 @@ A aplicação estará disponível em [`http://localhost:5173`](http://localhost:
 - **Atualização da lista em tempo real** — A lista de chamados é atualizada instantaneamente ao criar ou modificar itens.
 - **Níveis de prioridade** — Atribua prioridade baixa, média ou alta aos seus chamados.
 - **Layout responsivo** *(planejado)* — Design mobile-first (em andamento).
+- **Backend funcional** —  Os dados são armazenados em um servidor local (em memória) e continuam disponíveis enquanto o servidor estiver rodando. Persistência será adicionada com um banco de dados.
 
 ---
 
@@ -272,6 +421,9 @@ A aplicação estará disponível em [`http://localhost:5173`](http://localhost:
 
 ```
 call-ally/
+└─ .github/workflows
+   └─ ci.yml                  # Entrada do CI (Continuous Integration)
+└─ backend/                   # Código-fonte da API REST
 └─ src/                       # Código-fonte da aplicação.
    ├─ components/             # Componentes reutilizáveis de interface (React).
    ├─ services/               # Camada de acesso a dados (API mock assíncrona).
@@ -294,10 +446,12 @@ call-ally/
 | Pasta           | Descrição |
 |-----------------|-----------|
 | `src/`          | Todo o código-fonte da aplicação fica aqui. |
-| `src/components/` | Componentes reutilizáveis de interface (React). Cada componente recebe dados via props e gerencia seu próprio estado local. |
-| `src/services/`   | Camada de acesso a dados que abstrai a origem dos dados. A interface nunca acessa a origem diretamente. Atualmente usa um mock com `setTimeout`; no futuro usará `fetch` contra o backend. |
+| `src/components/` | Peças reutilizáveis da interface React. Cada componente recebe dados via `props` e gerencia seu próprio estado local. |
+| `src/services/`   | Camada de acesso a dados que abstrai a origem dos dados. A interface nunca acessa a fonte diretamente. Atualmente usa `fetch` para se comunicar com a API do backend. |
 | `src/styles/`     | CSS global compartilhado por toda a aplicação. |
-| `src/types/`      | Tipos de domínio usados em toda a aplicação. Eles definem o contrato entre o frontend e o futuro backend, portanto sua forma deve corresponder ao que a API retorna. |
+| `src/types/`      | Tipos de domínio usados em toda a aplicação. Eles definem o contrato entre o frontend e o backend, portanto sua estrutura deve corresponder ao que a API retorna. |
+| `backend/`        | Código-fonte da API REST. Contém o servidor Express, as definições de rotas e o armazenamento de dados em memória. Este é o ponto de entrada do backend da aplicação. |
+| `.github/workflows` | Configuração de CI/CD. O arquivo `ci.yml` define o pipeline de integração contínua, que executa verificações de tipo e a build a cada `push` ou `pull request` para a branch `main`. |
 
 ---
 
@@ -320,8 +474,8 @@ O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada 
 
 > Substituir o array em memória por um servidor Node.js real e um banco de dados PostgreSQL. As tarefas de qualidade e documentação são tratadas em paralelo ao longo deste marco. Prazo: **21 de set de 2026**.
 
-- [ ] [#7](https://github.com/trelosoke/call-ally/issues/7) Criar um servidor com roteamento básico
-- [ ] [#8](https://github.com/trelosoke/call-ally/issues/8) Conectar o frontend ao servidor real
+- [x] [#7](https://github.com/trelosoke/call-ally/issues/7) Criar um servidor com roteamento básico
+- [x] [#8](https://github.com/trelosoke/call-ally/issues/8) Conectar o frontend ao servidor real
 - [ ] [#9](https://github.com/trelosoke/call-ally/issues/9) Introduzir armazenamento persistente de dados
 - [ ] [#10](https://github.com/trelosoke/call-ally/issues/10) Migrar as operações de leitura para o armazenamento persistente
 - [ ] [#11](https://github.com/trelosoke/call-ally/issues/11) Migrar as operações de escrita para o armazenamento persistente
