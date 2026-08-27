@@ -82,14 +82,10 @@ The application will be available at [`http://localhost:5173`](http://localhost:
 Open a **second terminal** (beside the frontend one) and start the server:
 
 ```bash
-node backend/server.js
+npm run server
 ```
 
-> **Tip:** Use `nodemon` for automatic restarts during development:
-> ```bash
-> npm install -g nodemon   # install once
-> nodemon backend/server.js
-> ```
+> **Note:** The backend runs through `tsx` because the Prisma 7 Client is generated as TypeScript files. Running `node backend/server.js` directly fails with a module resolution error.
 
 The server will be available at [`http://localhost:3000`](http://localhost:3000).
 
@@ -332,14 +328,10 @@ A aplicação estará disponível em [`http://localhost:5173`](http://localhost:
 Abra um **segundo terminal** (ao lado do frontend) e inicie o servidor:
 
 ```bash
-node backend/server.js
+npm run server
 ```
 
-> **Dica:** Use o `nodemon` para reinícios automáticos durante o desenvolvimento:
-> ```bash
-> npm install -g nodemon   # instale uma vez
-> nodemon backend/server.js
-> ```
+> **Nota:** O backend roda via `tsx` porque o Prisma 7 Client é gerado como arquivos TypeScript. Executar `node backend/server.js` diretamente falha com erro de resolução de módulo.
 
 O servidor estará disponível em [`http://localhost:3000`](http://localhost:3000).
 
