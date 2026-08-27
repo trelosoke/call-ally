@@ -31,10 +31,11 @@
 <p align="left">
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="40" height="40" />
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" width="40" height="40" style="filter: invert(1);" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" width="40" height="40" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" width="40" height="40" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" width="40" height="40" />
 </p>
 
-> Now running in a **local server**, with **GET** and **POST** working methods. Check [Running the Backend](#-running-the-backend) to see how to run.
+> Now running on a **local server** with **GET** and **POST** working methods, persisting calls in a **SQLite database** via **Prisma**. See [How to View and Test](#how-to-view-and-test) for run instructions.
 
 ### Tools & Platforms
 <p align="left">
@@ -65,29 +66,56 @@
    npm install
    ```
 
-### 🖌 Running the Frontend
+### ▶️ Running the Full Stack (Backend + Frontend)
 
-Start the development server:
+The app has two servers: the **backend** (Express API) and the **frontend** (Vite). Run them in **two separate terminals**.
 
-```bash
-npm run dev
-```
+1. **Terminal 1 — Backend:**
+   ```bash
+   npm run server
+   ```
+   The server will be available at [`http://localhost:3000`](http://localhost:3000).
 
-The application will be available at [`http://localhost:5173`](http://localhost:5173).
+2. **Terminal 2 — Frontend:**
+   ```bash
+   npm run dev
+   ```
+   The application will be available at [`http://localhost:5173`](http://localhost:5173).
 
----
+3. Open [`http://localhost:5173`](http://localhost:5173) and use the app.
 
-### 🔧 Running the Backend
+> **Note:** The frontend uses a Vite proxy (`/api`) that forwards API requests to the backend, so no CORS configuration is needed during development.
 
-Open a **second terminal** (beside the frontend one) and start the server:
+### 🗄️ Setting Up the Database *(optional, required for persistence)*
 
-```bash
-npm run server
-```
+The backend stores calls in a **SQLite** database via **Prisma**. To run the app **with** the database, run these steps **once**:
 
-> **Note:** The backend runs through `tsx` because the Prisma 7 Client is generated as TypeScript files. Running `node backend/server.js` directly fails with a module resolution error.
+1. Create the `.env` file from the template:
+   ```bash
+   cp .env.example .env
+   ```
+   (On Windows: `copy .env.example .env`)
 
-The server will be available at [`http://localhost:3000`](http://localhost:3000).
+2. Apply the migrations to create the SQLite database:
+   ```bash
+   npx prisma migrate dev
+   ```
+
+3. Generate the Prisma Client:
+   ```bash
+   npx prisma generate
+   ```
+
+The database file `dev.db` is created at the project root. Without it, the backend starts but cannot serve or store calls — requests return an error.
+
+#### Available scripts
+
+| Script      | Command               | Description |
+|-------------|-----------------------|-------------|
+| `dev`       | `npm run dev`         | Starts the frontend (Vite) |
+| `server`    | `npm run server`      | Runs the backend with `tsx` |
+| `pserver`   | `npm run pserver`     | Runs the backend with `tsx` and auto-restart (nodemon) |
+| `studio`    | `npm run studio`      | Opens Prisma Studio to browse and edit the database |
 
 ---
 
@@ -142,11 +170,11 @@ curl -X POST http://localhost:3000/calls \
 
 ### 🔗 Full Integration Test
 
-1. Run both the frontend (`npm run dev`) and backend (`node backend/server.js`).
+1. Run both the frontend (`npm run dev`) and backend (`npm run server`).
 2. Open the frontend at `http://localhost:5173`.
 3. Create a new call via the form.
 4. The call should appear in the list **without** refreshing the page.
-5. Refresh the page – the call should **still be there** (because the data comes from the server, not mock).
+5. Refresh the page – the call should **still be there** (because the data comes from the database, not a mock).
 
 > **Note:** The frontend uses a Vite proxy (`/api`) to avoid CORS issues. This means all requests to `/api/calls` are forwarded to `http://localhost:3000/calls`. You don't need to worry about CORS during development.
 
@@ -157,7 +185,11 @@ curl -X POST http://localhost:3000/calls \
 - **Real-time list updates** — The call list updates instantly as you create or modify items.
 - **Priority levels** — Assign low, medium, or high priority to your calls.
 - **Responsive layout** *(planned)* — Mobile-first design (in progress).
-- **Functional backend** — Data is stored on the local server (in-memory) and remains available while the server is running. Persistence will be added with a database.
+- **Functional backend** — Express server exposing `GET` and `POST /calls`, with the frontend connected through a Vite proxy.
+- **Database persistence** — Calls are stored in a **SQLite** database via **Prisma ORM**, so data survives server restarts and page refreshes.
+- **Migrations** — Schema changes are tracked as migrations in `prisma/migrations` and applied with `npx prisma migrate dev`.
+- **Prisma Studio** — Browse and edit the database visually with `npm run studio`.
+- **Convenient scripts** — `npm run server` (backend), `npm run pserver` (backend with auto-restart) and `npm run studio` (database UI).
 
 ---
 
@@ -165,24 +197,33 @@ curl -X POST http://localhost:3000/calls \
 
 ```
 call-ally/
-└─ .github/workflows
-   └─ ci.yml                  # Continuous Integration (CI) entry
-└─ backend/                   # REST API source code
-└─ src/                       # Application source code.
-   ├─ components/             # Reusable React UI components.
-   ├─ services/               # Data access layer (async mock API).
-   ├─ styles/                 # Global CSS files.
-   ├─ types/                  # Shared domain types.
-   ├─ App.tsx                 # Root component with global calls state and page layout.
-   ├─ main.tsx                # React entry point that renders <App />.
-   └─ vite-env.d.ts           # Vite type declarations.
-├─ .gitignore                 # Lists files and folders ignored by Git.
-├─ index.html                 # Entry HTML file with the #root mount point.
-├─ package-lock.json          # Locks the exact versions of installed dependencies.
-├─ package.json               # Project metadata, scripts and dependencies.
-├─ README.md                  # Project documentation.
-├─ tsconfig.json              # TypeScript compiler configuration.
-├─ vite.config.js             # Vite configuration (dev server and build).
+├─ .github/workflows/
+│  └─ ci.yml                   # CI pipeline (typecheck + build)
+├─ .agents/                    # AI agent skills (Prisma, generated by prisma init)
+├─ backend/
+│  └─ server.ts                # Express server using the Prisma Client
+├─ prisma/
+│  ├─ schema.prisma            # Prisma schema (Call model and generator)
+│  └─ migrations/              # SQL migration history
+├─ scripts/
+│  └─ prisma-studio.mjs        # Prisma Studio launcher (SQLite file URL)
+├─ src/                        # Frontend source code
+│  ├─ components/              # Reusable React UI components
+│  ├─ services/                # Data access layer (fetch to the backend API)
+│  ├─ styles/                  # Global CSS files
+│  ├─ types/                   # Shared domain types
+│  ├─ App.tsx                  # Root component with global calls state and page layout
+│  ├─ main.tsx                 # React entry point that renders <App />
+│  └─ vite-env.d.ts            # Vite type declarations
+├─ .env.example                # Environment variables template (DATABASE_URL)
+├─ .gitignore                  # Lists files and folders ignored by Git
+├─ index.html                  # Entry HTML file with the #root mount point
+├─ package-lock.json           # Locks the exact versions of installed dependencies
+├─ package.json                # Project metadata, scripts and dependencies
+├─ prisma.config.ts            # Prisma configuration (datasource URL and migrations path)
+├─ README.md                   # Project documentation
+├─ tsconfig.json               # TypeScript compiler configuration
+└─ vite.config.js              # Vite configuration (dev server and /api proxy)
 ```
 
 ### Folder descriptions
@@ -194,7 +235,11 @@ call-ally/
 | `src/services/`   | Data access layer that abstracts where data comes from. UI never touches the source directly. Currently uses `fetch` to communicate with the backend API. |
 | `src/styles/`     | Global CSS shared by the whole app. |
 | `src/types/`      | Domain types used everywhere. They define the contract between frontend and the backend, so their shape must match what the API returns. |
-| `backend/`        | REST API source code. Contains the Express server, route definitions, and in‑memory data storage. This is the backend entry point for the application. |
+| `src/generated/`  | Prisma Client generated by `npx prisma generate`. Git-ignored; regenerate after schema changes. |
+| `backend/`        | REST API source code. Contains the Express server, route definitions, and the Prisma Client that persists data in the SQLite database. |
+| `prisma/`         | Prisma schema (`schema.prisma`) and the SQL migrations that evolve the database. |
+| `scripts/`        | Helper scripts. `prisma-studio.mjs` launches Prisma Studio with the correct SQLite file URL. |
+| `.agents/`        | AI agent skills (Prisma CLI/Client documentation) consumed by coding agents. |
 | `.github/workflows`        | CI/CD configuration. The `ci.yml` file defines the continuous integration pipeline, which runs type checks and builds on every push or pull request to the `main` branch. |
 
 ---
@@ -216,13 +261,13 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
 
 ### 🚧 MVP Full-Stack (Backend + Database) — *in progress*
 
-> Replace the in-memory array with a real Node.js server and PostgreSQL database. Quality and documentation tasks are being handled in parallel throughout this milestone. Due **Sep 21, 2026**.
+> Replace the in-memory array with a real Node.js server and SQLite database. Quality and documentation tasks are being handled in parallel throughout this milestone. Due **Sep 21, 2026**.
 
 - [x] [#7](https://github.com/trelosoke/call-ally/issues/7) Establish a Server with Basic Routing
 - [x] [#8](https://github.com/trelosoke/call-ally/issues/8) Connect the Frontend to the Real Server
-- [ ] [#9](https://github.com/trelosoke/call-ally/issues/9) Introduce Persistent Data Storage
-- [ ] [#10](https://github.com/trelosoke/call-ally/issues/10) Migrate Read Operations to Persistent Storage
-- [ ] [#11](https://github.com/trelosoke/call-ally/issues/11) Migrate Write Operations to Persistent Storage
+- [x] [#9](https://github.com/trelosoke/call-ally/issues/9) Introduce Persistent Data Storage
+- [x] [#10](https://github.com/trelosoke/call-ally/issues/10) Migrate Read Operations to Persistent Storage
+- [x] [#11](https://github.com/trelosoke/call-ally/issues/11) Migrate Write Operations to Persistent Storage
 - [ ] [#12](https://github.com/trelosoke/call-ally/issues/12) Remove Temporary Storage and Validate the Full System
 - [ ] [#20](https://github.com/trelosoke/call-ally/issues/20) Set up Continuous Integration (CI) for the Frontend
 - [ ] [#21](https://github.com/trelosoke/call-ally/issues/21) Set up Continuous Integration (CI) for the Backend
@@ -276,10 +321,11 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
 <p align="left">
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" width="40" height="40" />
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" width="40" height="40" style="filter: invert(1);" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" width="40" height="40" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" width="40" height="40" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" width="40" height="40" />
 </p>
 
-> Agora rodando em um *servidor local*, com métodos *GET* e *POST* funcionando. Veja [Executando o Backend](#-executando-o-backend) para saber como rodar.
+> Agora rodando em um *servidor local*, com métodos *GET* e *POST* funcionando e persistindo os chamados em um *banco de dados SQLite* via *Prisma*. Veja [Como Visualizar e Testar](#como-visualizar-e-testar) para saber como rodar.
 
 #### Ferramentas e Plataformas
 
@@ -311,29 +357,56 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
    npm install
    ```
 
-### 🖌 Executando o Frontend
+#### ▶️ Rodando o Full Stack (Backend + Frontend)
 
-Inicie o servidor de desenvolvimento:
+O aplicativo tem dois servidores: o **backend** (API Express) e o **frontend** (Vite). Execute-os em **dois terminais separados**.
 
-```bash
-npm run dev
-```
+1. **Terminal 1 — Backend:**
+   ```bash
+   npm run server
+   ```
+   O servidor estará disponível em [`http://localhost:3000`](http://localhost:3000).
 
-A aplicação estará disponível em [`http://localhost:5173`](http://localhost:5173).
+2. **Terminal 2 — Frontend:**
+   ```bash
+   npm run dev
+   ```
+   A aplicação estará disponível em [`http://localhost:5173`](http://localhost:5173).
 
----
+3. Abra [`http://localhost:5173`](http://localhost:5173) e use o aplicativo.
 
-### 🔧 Executando o Backend
+> **Nota:** O frontend usa um proxy do Vite (`/api`) que encaminha as requisições da API para o backend, então nenhuma configuração de CORS é necessária durante o desenvolvimento.
 
-Abra um **segundo terminal** (ao lado do frontend) e inicie o servidor:
+#### 🗄️ Configurando o Banco de Dados *(opcional, necessário para persistência)*
 
-```bash
-npm run server
-```
+O backend armazena chamados em um banco **SQLite** via **Prisma**. Para rodar o aplicativo **com** banco de dados, execute estes passos **uma vez**:
 
-> **Nota:** O backend roda via `tsx` porque o Prisma 7 Client é gerado como arquivos TypeScript. Executar `node backend/server.js` diretamente falha com erro de resolução de módulo.
+1. Crie o arquivo `.env` a partir do template:
+   ```bash
+   cp .env.example .env
+   ```
+   (No Windows: `copy .env.example .env`)
 
-O servidor estará disponível em [`http://localhost:3000`](http://localhost:3000).
+2. Aplique as migrações para criar o banco SQLite:
+   ```bash
+   npx prisma migrate dev
+   ```
+
+3. Gere o Prisma Client:
+   ```bash
+   npx prisma generate
+   ```
+
+O arquivo do banco `dev.db` é criado na raiz do projeto. Sem ele, o backend inicia, mas não consegue servir nem armazenar chamados — as requisições retornam erro.
+
+#### Scripts disponíveis
+
+| Script      | Comando               | Descrição |
+|-------------|-----------------------|-----------|
+| `dev`       | `npm run dev`         | Inicia o frontend (Vite) |
+| `server`    | `npm run server`      | Roda o backend com `tsx` |
+| `pserver`   | `npm run pserver`     | Roda o backend com `tsx` e reinício automático (nodemon) |
+| `studio`    | `npm run studio`      | Abre o Prisma Studio para navegar e editar o banco |
 
 ---
 
@@ -388,11 +461,11 @@ curl -X POST http://localhost:3000/calls \
 
 ### 🔗 Teste de Integração Completo
 
-1. Execute tanto o frontend (`npm run dev`) quanto o backend (`node backend/server.js`).
+1. Execute tanto o frontend (`npm run dev`) quanto o backend (`npm run server`).
 2. Abra o frontend em `http://localhost:5173`.
 3. Crie um novo chamado através do formulário.
 4. O chamado deve aparecer na lista **sem** recarregar a página.
-5. Recarregue a página – o chamado deve **continuar lá** (porque os dados vêm do servidor, não do mock).
+5. Recarregue a página – o chamado deve **continuar lá** (porque os dados vêm do banco de dados, não do mock).
 
 > **Nota:** O frontend usa um proxy do Vite (`/api`) para evitar problemas de CORS. Isso significa que todas as requisições para `/api/calls` são encaminhadas para `http://localhost:3000/calls`. Você não precisa se preocupar com CORS durante o desenvolvimento.
 
@@ -405,7 +478,11 @@ curl -X POST http://localhost:3000/calls \
 - **Atualização da lista em tempo real** — A lista de chamados é atualizada instantaneamente ao criar ou modificar itens.
 - **Níveis de prioridade** — Atribua prioridade baixa, média ou alta aos seus chamados.
 - **Layout responsivo** *(planejado)* — Design mobile-first (em andamento).
-- **Backend funcional** —  Os dados são armazenados em um servidor local (em memória) e continuam disponíveis enquanto o servidor estiver rodando. Persistência será adicionada com um banco de dados.
+- **Backend funcional** — Servidor Express expondo `GET` e `POST /calls`, com o frontend conectado através de um proxy do Vite.
+- **Persistência no banco de dados** — Os chamados são armazenados em um banco **SQLite** via **Prisma ORM**, então os dados sobrevivem a reinícios do servidor e recarregamentos da página.
+- **Migrações** — Mudanças no schema são rastreadas como migrações em `prisma/migrations` e aplicadas com `npx prisma migrate dev`.
+- **Prisma Studio** — Navegue e edite o banco visualmente com `npm run studio`.
+- **Scripts convenientes** — `npm run server` (backend), `npm run pserver` (backend com reinício automático) e `npm run studio` (interface do banco).
 
 ---
 
@@ -413,24 +490,33 @@ curl -X POST http://localhost:3000/calls \
 
 ```
 call-ally/
-└─ .github/workflows
-   └─ ci.yml                  # Entrada do CI (Continuous Integration)
-└─ backend/                   # Código-fonte da API REST
-└─ src/                       # Código-fonte da aplicação.
-   ├─ components/             # Componentes reutilizáveis de interface (React).
-   ├─ services/               # Camada de acesso a dados (API mock assíncrona).
-   ├─ styles/                 # Arquivos de CSS globais.
-   ├─ types/                  # Tipos de domínio compartilhados.
-   ├─ App.tsx                 # Componente raiz com o estado global dos chamados e o layout da página.
-   ├─ main.tsx                # Ponto de entrada do React que renderiza <App />.
-   └─ vite-env.d.ts           # Declarações de tipos do Vite.
-├─ .gitignore                 # Lista arquivos e pastas ignorados pelo Git.
-├─ index.html                 # Arquivo HTML de entrada com o ponto de montagem #root.
-├─ package-lock.json          # Fixa as versões exatas das dependências instaladas.
-├─ package.json               # Metadados, scripts e dependências do projeto.
-├─ README.md                  # Documentação do projeto.
-├─ tsconfig.json              # Configuração do compilador TypeScript.
-├─ vite.config.js             # Configuração do Vite (servidor de desenvolvimento e build).
+├─ .github/workflows/
+│  └─ ci.yml                   # Pipeline de CI (typecheck e build)
+├─ .agents/                    # Skills de agentes de IA (Prisma, geradas pelo prisma init)
+├─ backend/
+│  └─ server.ts                # Servidor Express usando o Prisma Client
+├─ prisma/
+│  ├─ schema.prisma            # Schema do Prisma (modelo Call e generator)
+│  └─ migrations/              # Histórico de migrações SQL
+├─ scripts/
+│  └─ prisma-studio.mjs        # Inicializador do Prisma Studio (URL do arquivo SQLite)
+├─ src/                        # Código-fonte do frontend
+│  ├─ components/              # Componentes reutilizáveis de interface (React)
+│  ├─ services/                # Camada de acesso a dados (fetch para a API do backend)
+│  ├─ styles/                  # Arquivos de CSS globais
+│  ├─ types/                   # Tipos de domínio compartilhados
+│  ├─ App.tsx                  # Componente raiz com o estado global dos chamados e o layout da página
+│  ├─ main.tsx                 # Ponto de entrada do React que renderiza <App />
+│  └─ vite-env.d.ts            # Declarações de tipos do Vite
+├─ .env.example                # Template de variáveis de ambiente (DATABASE_URL)
+├─ .gitignore                  # Lista arquivos e pastas ignorados pelo Git
+├─ index.html                  # Arquivo HTML de entrada com o ponto de montagem #root
+├─ package-lock.json           # Fixa as versões exatas das dependências instaladas
+├─ package.json                # Metadados, scripts e dependências do projeto
+├─ prisma.config.ts            # Configuração do Prisma (URL do datasource e caminho das migrações)
+├─ README.md                   # Documentação do projeto
+├─ tsconfig.json               # Configuração do compilador TypeScript
+└─ vite.config.js              # Configuração do Vite (servidor de desenvolvimento e proxy /api)
 ```
 
 #### Descrição das pastas
@@ -442,7 +528,11 @@ call-ally/
 | `src/services/`   | Camada de acesso a dados que abstrai a origem dos dados. A interface nunca acessa a fonte diretamente. Atualmente usa `fetch` para se comunicar com a API do backend. |
 | `src/styles/`     | CSS global compartilhado por toda a aplicação. |
 | `src/types/`      | Tipos de domínio usados em toda a aplicação. Eles definem o contrato entre o frontend e o backend, portanto sua estrutura deve corresponder ao que a API retorna. |
-| `backend/`        | Código-fonte da API REST. Contém o servidor Express, as definições de rotas e o armazenamento de dados em memória. Este é o ponto de entrada do backend da aplicação. |
+| `src/generated/`  | Prisma Client gerado por `npx prisma generate`. Ignorado pelo Git; regenere após mudanças no schema. |
+| `backend/`        | Código-fonte da API REST. Contém o servidor Express, as definições de rotas e o Prisma Client que persiste os dados no banco SQLite. |
+| `prisma/`         | Schema do Prisma (`schema.prisma`) e as migrações SQL que evoluem o banco de dados. |
+| `scripts/`        | Scripts auxiliares. `prisma-studio.mjs` abre o Prisma Studio com a URL correta do arquivo SQLite. |
+| `.agents/`        | Skills de agentes de IA (documentação do Prisma CLI/Client) consumidas por agentes de codificação. |
 | `.github/workflows` | Configuração de CI/CD. O arquivo `ci.yml` define o pipeline de integração contínua, que executa verificações de tipo e a build a cada `push` ou `pull request` para a branch `main`. |
 
 ---
@@ -464,13 +554,13 @@ O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada 
 
 #### 🚧 MVP Full-Stack (Backend + Banco de Dados) — *em andamento*
 
-> Substituir o array em memória por um servidor Node.js real e um banco de dados PostgreSQL. As tarefas de qualidade e documentação são tratadas em paralelo ao longo deste marco. Prazo: **21 de set de 2026**.
+> Substituir o array em memória por um servidor Node.js real e um banco de dados SQLite. As tarefas de qualidade e documentação são tratadas em paralelo ao longo deste marco. Prazo: **21 de set de 2026**.
 
 - [x] [#7](https://github.com/trelosoke/call-ally/issues/7) Criar um servidor com roteamento básico
 - [x] [#8](https://github.com/trelosoke/call-ally/issues/8) Conectar o frontend ao servidor real
-- [ ] [#9](https://github.com/trelosoke/call-ally/issues/9) Introduzir armazenamento persistente de dados
-- [ ] [#10](https://github.com/trelosoke/call-ally/issues/10) Migrar as operações de leitura para o armazenamento persistente
-- [ ] [#11](https://github.com/trelosoke/call-ally/issues/11) Migrar as operações de escrita para o armazenamento persistente
+- [x] [#9](https://github.com/trelosoke/call-ally/issues/9) Introduzir armazenamento persistente de dados
+- [x] [#10](https://github.com/trelosoke/call-ally/issues/10) Migrar as operações de leitura para o armazenamento persistente
+- [x] [#11](https://github.com/trelosoke/call-ally/issues/11) Migrar as operações de escrita para o armazenamento persistente
 - [ ] [#12](https://github.com/trelosoke/call-ally/issues/12) Remover o armazenamento temporário e validar o sistema completo
 - [ ] [#20](https://github.com/trelosoke/call-ally/issues/20) Configurar Integração Contínua (CI) para o frontend
 - [ ] [#21](https://github.com/trelosoke/call-ally/issues/21) Configurar Integração Contínua (CI) para o backend
