@@ -1,0 +1,19 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+model Call {
+  id        String   @id @default(uuid())
+  title     String
+  smallDesc String
+  fullDesc  String
+  dueDate   String
+  priority  String?
+  tags      String
+  createdAt DateTime @default(now())
+}
