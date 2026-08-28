@@ -21,7 +21,8 @@
   "author": "Diogo da Silva <diogoviniciussilva.dev@gmail.com>",
   "type": "module",
   "scripts": {
-    "test": "echo \\\"Error: no test specified\\\" && exit 1",
+    "test": "node --import tsx --test",
+    "test:watch": "node --import tsx --test --watch",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "prisma": "^7.10.0",
