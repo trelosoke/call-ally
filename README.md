@@ -268,16 +268,21 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
 - [x] [#9](https://github.com/trelosoke/call-ally/issues/9) Introduce Persistent Data Storage
 - [x] [#10](https://github.com/trelosoke/call-ally/issues/10) Migrate Read Operations to Persistent Storage
 - [x] [#11](https://github.com/trelosoke/call-ally/issues/11) Migrate Write Operations to Persistent Storage
-- [ ] [#12](https://github.com/trelosoke/call-ally/issues/12) Remove Temporary Storage and Validate the Full System
-- [ ] [#20](https://github.com/trelosoke/call-ally/issues/20) Set up Continuous Integration (CI) for the Frontend
+- [x] [#12](https://github.com/trelosoke/call-ally/issues/12) Remove Temporary Storage and Validate the Full System
+- [x] [#20](https://github.com/trelosoke/call-ally/issues/20) Set up Continuous Integration (CI) for the Frontend
+- [x] [#26](https://github.com/trelosoke/call-ally/pull/26) Implement HTTP server and frontend integration (PR)
+- [x] [#33](https://github.com/trelosoke/call-ally/pull/33) Implement persistent data with Prisma and SQLite (PR)
 - [ ] [#21](https://github.com/trelosoke/call-ally/issues/21) Set up Continuous Integration (CI) for the Backend
 - [ ] [#22](https://github.com/trelosoke/call-ally/issues/22) Configure Continuous Deployment (CD) for the Full Stack Application
+- [ ] [#27](https://github.com/trelosoke/call-ally/issues/27) Finalize MVP Full-Stack with CI/CD and Deploy
 
 ### 📋 Quality & Documentation — *parallel to backend*
 
 > Documentation, testing, and configuration tasks are being addressed as part of the development process — they are not postponed to the end of the project. Due **Sep 27, 2026**.
 
 - [x] [#13](https://github.com/trelosoke/call-ally/issues/13) Write Frontend README (Current State)
+- [x] [#24](https://github.com/trelosoke/call-ally/pull/24) Add README and MIT License (PR)
+- [x] [#25](https://github.com/trelosoke/call-ally/pull/25) Add GitHub Actions workflow for frontend typecheck and build (PR)
 - [ ] [#14](https://github.com/trelosoke/call-ally/issues/14) Maintain and Update README During Backend Development
 - [ ] [#15](https://github.com/trelosoke/call-ally/issues/15) Implement Basic Unit Testing
 - [ ] [#16](https://github.com/trelosoke/call-ally/issues/16) Implement API Integration Tests
@@ -285,6 +290,16 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
 - [ ] [#18](https://github.com/trelosoke/call-ally/issues/18) Add API Documentation (OpenAPI / Markdown)
 - [ ] [#19](https://github.com/trelosoke/call-ally/issues/19) Implement Structured Logging and Error Handling
 - [ ] [#23](https://github.com/trelosoke/call-ally/issues/23) Apply Styling with Tailwind CSS
+
+### 🚀 Deploy & Infrastructure — *upcoming*
+
+> Make the CallAlly application publicly accessible by deploying the frontend, backend, and database to production environments.
+
+- [ ] [#28](https://github.com/trelosoke/call-ally/issues/28) Configure Production Database
+- [ ] [#29](https://github.com/trelosoke/call-ally/issues/29) Deploy Backend to Production
+- [ ] [#30](https://github.com/trelosoke/call-ally/issues/30) Deploy Frontend to Production
+- [ ] [#31](https://github.com/trelosoke/call-ally/issues/31) Set up CI/CD Pipeline
+- [ ] [#32](https://github.com/trelosoke/call-ally/issues/32) Validate Production System
 
 ---
 
@@ -561,16 +576,21 @@ O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada 
 - [x] [#9](https://github.com/trelosoke/call-ally/issues/9) Introduzir armazenamento persistente de dados
 - [x] [#10](https://github.com/trelosoke/call-ally/issues/10) Migrar as operações de leitura para o armazenamento persistente
 - [x] [#11](https://github.com/trelosoke/call-ally/issues/11) Migrar as operações de escrita para o armazenamento persistente
-- [ ] [#12](https://github.com/trelosoke/call-ally/issues/12) Remover o armazenamento temporário e validar o sistema completo
-- [ ] [#20](https://github.com/trelosoke/call-ally/issues/20) Configurar Integração Contínua (CI) para o frontend
+- [x] [#12](https://github.com/trelosoke/call-ally/issues/12) Remover o armazenamento temporário e validar o sistema completo
+- [x] [#20](https://github.com/trelosoke/call-ally/issues/20) Configurar Integração Contínua (CI) para o frontend
+- [x] [#26](https://github.com/trelosoke/call-ally/pull/26) Implementar servidor HTTP e integração com o frontend (PR)
+- [x] [#33](https://github.com/trelosoke/call-ally/pull/33) Implementar dados persistentes com Prisma e SQLite (PR)
 - [ ] [#21](https://github.com/trelosoke/call-ally/issues/21) Configurar Integração Contínua (CI) para o backend
 - [ ] [#22](https://github.com/trelosoke/call-ally/issues/22) Configurar Implantação Contínua (CD) para a aplicação full-stack
+- [ ] [#27](https://github.com/trelosoke/call-ally/issues/27) Finalizar o MVP Full-Stack com CI/CD e Deploy
 
 #### 📋 Qualidade e Documentação — *em paralelo ao backend*
 
 > As tarefas de documentação, testes e configuração são tratadas como parte do processo de desenvolvimento — não são adiadas para o fim do projeto. Prazo: **27 de set de 2026**.
 
 - [x] [#13](https://github.com/trelosoke/call-ally/issues/13) Escrever README do frontend (estado atual)
+- [x] [#24](https://github.com/trelosoke/call-ally/pull/24) Adicionar README e licença MIT (PR)
+- [x] [#25](https://github.com/trelosoke/call-ally/pull/25) Adicionar workflow do GitHub Actions para typecheck e build do frontend (PR)
 - [ ] [#14](https://github.com/trelosoke/call-ally/issues/14) Manter e atualizar o README durante o desenvolvimento do backend
 - [ ] [#15](https://github.com/trelosoke/call-ally/issues/15) Implementar testes unitários básicos
 - [ ] [#16](https://github.com/trelosoke/call-ally/issues/16) Implementar testes de integração da API
@@ -578,3 +598,13 @@ O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada 
 - [ ] [#18](https://github.com/trelosoke/call-ally/issues/18) Adicionar documentação da API (OpenAPI / Markdown)
 - [ ] [#19](https://github.com/trelosoke/call-ally/issues/19) Implementar logging estruturado e tratamento de erros
 - [ ] [#23](https://github.com/trelosoke/call-ally/issues/23) Aplicar estilização com Tailwind CSS
+
+#### 🚀 Deploy & Infraestrutura — *próximo*
+
+> Tornar o CallAlly publicamente acessível, implantando frontend, backend e banco de dados em ambientes de produção.
+
+- [ ] [#28](https://github.com/trelosoke/call-ally/issues/28) Configurar o banco de dados de produção
+- [ ] [#29](https://github.com/trelosoke/call-ally/issues/29) Implantar o backend em produção
+- [ ] [#30](https://github.com/trelosoke/call-ally/issues/30) Implantar o frontend em produção
+- [ ] [#31](https://github.com/trelosoke/call-ally/issues/31) Configurar o pipeline de CI/CD
+- [ ] [#32](https://github.com/trelosoke/call-ally/issues/32) Validar o sistema em produção
