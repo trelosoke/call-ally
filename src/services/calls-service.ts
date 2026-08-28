@@ -1,6 +1,6 @@
 import type { Call } from '../types/calls';
 
-async function handleResponse(response: Response): Promise<any> {
+export async function handleResponse(response: Response): Promise<any> {
     if (!response.ok) {
         const text = await response.text();
         throw new Error(`Request failed (${response.status}): ${text || response.statusText}`);
