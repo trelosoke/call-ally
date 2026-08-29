@@ -1,4 +1,4 @@
-import { test, describe } from 'node:test';
+import { test, describe, mock } from 'node:test';
 import assert from 'node:assert';
 import { createCall, listCalls, handleResponse } from './calls-service';
 
@@ -12,5 +12,17 @@ describe('handleResponse', () => {
         const result = await handleResponse(mockResponse);
         
         assert.deepStrictEqual(result, {id: 1, text: 'Test'});
+    });
+
+    test('show return error when response is 404', async () => {
+        const mockResponse = new Response(
+            'Not Found',
+            { status: 404, statusText: 'Not Found' }
+        );
+
+        await assert.rejects(
+            async () => await handleResponse(mockResponse),
+            /Request failed \(404\): Not Found/
+        );
     });
 });
