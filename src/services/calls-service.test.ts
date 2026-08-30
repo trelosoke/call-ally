@@ -2,27 +2,36 @@ import { test, describe, mock } from 'node:test';
 import assert from 'node:assert';
 import { createCall, listCalls, handleResponse } from './calls-service';
 
+function createMockResponse(body: BodyInit | null, status?: number, statusText?: string) {
+    return new Response(body, { 
+        ...(status && { status }), 
+        ...(statusText && { statusText })
+    });
+}
+
 describe('handleResponse', () => {
     test('should return OK', async () =>{
-        const mockResponse = new Response(
-            JSON.stringify({id: 1, text: 'Test'}),
-            { status: 200 }
-        );
+        const mockResponse = createMockResponse(JSON.stringify({id: 1, text: 'Test'}), 200);
 
         const result = await handleResponse(mockResponse);
         
         assert.deepStrictEqual(result, {id: 1, text: 'Test'});
     });
 
-    test('show return error when response is 404', async () => {
-        const mockResponse = new Response(
-            'Not Found',
-            { status: 404, statusText: 'Not Found' }
-        );
+    const errorCases = [
+        { status: 400, statusText: 'Bad Request' },
+        { status: 404, statusText: 'Not Found' },
+        { status: 500, statusText: 'Internal Server Error' },
+    ];
 
-        await assert.rejects(
-            async () => await handleResponse(mockResponse),
-            /Request failed \(404\): Not Found/
-        );
+    errorCases.forEach(({status, statusText}) => {
+        test(`show return error when response is ${status}`, async () => {
+            const mockResponse = createMockResponse(statusText, status, statusText);
+
+            await assert.rejects(
+                async () => await handleResponse(mockResponse),
+                new RegExp(`Request failed \\(${status}\\)`)
+            );
+        });
     });
 });
