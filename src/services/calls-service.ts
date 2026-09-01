@@ -17,7 +17,7 @@ export function listCalls(): Promise<Call[]> {
         });
 }
 
-export function createCall(newCallData: Omit<Call, 'id'>) {
+export function createCall(newCallData: Omit<Call, 'id' | 'createdAt'>) {
     return fetch('/api/calls', {
         method: 'POST',
         headers: {
