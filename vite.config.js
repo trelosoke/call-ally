@@ -18,9 +18,13 @@ export default defineConfig({
   },
   plugins: [react()],
   test: {
-    // O ambiente 'jsdom' simula o navegador para testar componentes React
-    environment: 'jsdom',
-    // Arquivo de setup para configurações globais (ex: matchers do jest-dom)
+    // Padrão leve: testes de lógica rodam em node. Arquivos que precisam de
+    // DOM (testes de componente .tsx) declaram `// @vitest-environment jsdom`
+    // no topo — mecanismo oficial do Vitest 4 para ambiente por arquivo.
+    environment: 'node',
+    // Setup global: o vitest-setup.ts importa o jest-dom apenas quando o
+    // ambiente do arquivo em execução tem DOM (window), evitando custo em
+    // testes unitários puros.
     setupFiles: ['./vitest-setup.ts'],
     // Cobertura de código (opcional)
     coverage: {
