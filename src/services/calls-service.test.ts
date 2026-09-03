@@ -77,6 +77,85 @@ describe('createCall', () => {
 
             expect(result).toEqual(expectedResponse);
 
+            expect(mockFetch).toHaveBeenCalledWith('/api/calls', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(call)
+            });
+
+            mockFetch.mockRestore();
+        });
+    });
+
+    describe('when call isn\'t created', () => {
+        const errorCases = [
+            { status: 400, statusText: 'Bad Request' },
+            { status: 404, statusText: 'Not Found' },
+            { status: 500, statusText: 'Internal Server Error' },
+        ];
+
+        errorCases.forEach(({ status, statusText }) => {
+            it(`should throw error for ${status} API error`, async () => {
+                const mockFetch = vi.spyOn(global, 'fetch');
+
+                mockFetch.mockResolvedValue(
+                    new Response(
+                        statusText,
+                        { status: status, statusText: statusText }
+                    )
+                );
+
+                const call: Omit<Call, 'id' | 'createdAt'> = {
+                    title: 'Test',
+                    smallDesc: 'This is a test',
+                    fullDesc: 'This call show be return as a value',
+                    dueDate: '2020-12-12T12:00',
+                    tags: [{ name: 'My Tag', color: '#ff4073' }],
+                    priority: 'high'
+                };
+
+                await expect(
+                    async () => await createCall(call)
+                )
+                .rejects.toThrow(
+                    new RegExp(`Request failed \\(${status}\\): ${statusText}`)
+                );
+
+                expect(mockFetch).toHaveBeenCalledWith('/api/calls', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(call)
+                });
+
+                mockFetch.mockRestore();
+            });
+        });
+
+        it('should throw a network error when fetch fails', async () => {
+            const mockFetch = vi.spyOn(global, 'fetch');
+
+            mockFetch.mockRejectedValue(new Error('Network error'));
+
+            const call: Omit<Call, 'id' | 'createdAt'> = {
+                title: 'Test',
+                smallDesc: 'This is a test',
+                fullDesc: 'This call show be return as a value',
+                dueDate: '2020-12-12T12:00',
+                tags: [{ name: 'My Tag', color: '#ff4073' }],
+                priority: 'high'
+            };
+
+            await expect(
+                async () => await createCall(call)
+            )
+            .rejects.toThrow('Network error');
+
+            expect(mockFetch).toHaveBeenCalledWith('/api/calls', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(call)
+            });
+
             mockFetch.mockRestore();
         });
     });
