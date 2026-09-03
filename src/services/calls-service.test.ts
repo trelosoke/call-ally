@@ -168,3 +168,97 @@ describe('createCall', () => {
         });
     });
 });
+
+describe('listCalls', () => {
+    describe('when calls are successfully returned', () => {
+        it('should return the calls list', async () => {
+            const mockFetch = vi.spyOn(global, 'fetch');
+
+            const mockCalls: Call[] = [
+                {
+                    id: '1',
+                    title: 'Call 1',
+                    smallDesc: 'Description 1',
+                    fullDesc: 'Full description 1',
+                    dueDate: '2026-09-03T10:00:00',
+                    priority: 'high',
+                    tags: [{ name: 'Tag1', color: '#ff0000' }],
+                    createdAt: '2026-09-03T10:00:00.000Z'
+                },
+                {
+                    id: '2',
+                    title: 'Call 2',
+                    smallDesc: 'Description 2',
+                    fullDesc: 'Full description 2',
+                    dueDate: '2026-09-04T10:00:00',
+                    priority: 'medium',
+                    tags: [{ name: 'Tag2', color: '#00ff00' }],
+                    createdAt: '2026-09-04T10:00:00.000Z'
+                }
+            ];
+
+            mockFetch.mockResolvedValue(
+                new Response(
+                    JSON.stringify(mockCalls),
+                    { status: 200, statusText: 'OK'}
+                )
+            );
+
+            const result = await listCalls();
+
+            expect(result).toEqual(mockCalls);
+
+            expect(mockFetch).toHaveBeenCalledWith('/api/calls');
+
+            mockFetch.mockRestore();
+        });
+    });
+    
+
+    describe('when calls are not returned', () => {
+        const errorCases = [
+            { status: 400, statusText: 'Bad Request' },
+            { status: 404, statusText: 'Not Found' },
+            { status: 500, statusText: 'Internal Server Error' },
+        ];
+
+        errorCases.forEach(({ status, statusText }) => {
+            it(`should throw error for ${status} API error`, async () => {
+                const mockFetch = vi.spyOn(global, 'fetch');
+
+                mockFetch.mockResolvedValue(
+                    new Response(
+                        statusText,
+                        { status: status, statusText: statusText }
+                    )
+                );
+
+                await expect(
+                    async () => await listCalls()
+                )
+                .rejects.toThrow(
+                    new RegExp(`Request failed \\(${status}\\): ${statusText}`)
+                );
+
+                expect(mockFetch).toHaveBeenCalledWith('/api/calls');
+
+                mockFetch.mockRestore();
+            });
+        });
+
+        it('should throw a network error when fetch fails', async () => {
+            const mockFetch = vi.spyOn(global, 'fetch');
+
+            mockFetch.mockRejectedValue(new Error('Network error'));
+
+            await expect(
+                async () => await listCalls()
+            )
+            .rejects.toThrow('Network error');
+
+            expect(mockFetch).toHaveBeenCalledWith('/api/calls');
+
+            mockFetch.mockRestore();
+        });
+    });
+});
