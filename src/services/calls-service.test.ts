@@ -17,6 +17,14 @@ describe('handleResponse', () => {
             
             expect(result).toEqual({id: 1, text: 'Test'});
         });
+
+        it('should return null for no body response', async () => {
+            const mockResponse = createMockResponse(null, 204, 'No Content');
+
+            await expect(handleResponse(mockResponse))
+                .resolves
+                .toBeNull();
+        });
     });
 
     describe('when response throw an error', () => {
@@ -27,7 +35,7 @@ describe('handleResponse', () => {
         ];
 
         errorCases.forEach(({status, statusText}) => {
-            it(`show throw error when response is ${status}`, async () => {
+            it(`should throw error when response is ${status}`, async () => {
                 const mockResponse = createMockResponse(statusText, status, statusText);
 
                 await expect(

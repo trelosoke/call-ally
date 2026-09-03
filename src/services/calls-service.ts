@@ -5,6 +5,11 @@ export async function handleResponse(response: Response): Promise<any> {
         const text = await response.text();
         throw new Error(`Request failed (${response.status}): ${text || response.statusText}`);
     }
+
+    if (response.status === 204) {
+        return null;
+    }
+
     return response.json();
 }
 
