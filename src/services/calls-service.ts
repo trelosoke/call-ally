@@ -1,10 +1,15 @@
 import type { Call } from '../types/calls';
 
-async function handleResponse(response: Response): Promise<any> {
+export async function handleResponse(response: Response): Promise<any> {
     if (!response.ok) {
         const text = await response.text();
         throw new Error(`Request failed (${response.status}): ${text || response.statusText}`);
     }
+
+    if (response.status === 204) {
+        return null;
+    }
+
     return response.json();
 }
 
@@ -17,7 +22,7 @@ export function listCalls(): Promise<Call[]> {
         });
 }
 
-export function createCall(newCallData: Omit<Call, 'id'>) {
+export function createCall(newCallData: Omit<Call, 'id' | 'createdAt'>) {
     return fetch('/api/calls', {
         method: 'POST',
         headers: {

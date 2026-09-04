@@ -21,7 +21,8 @@
   "author": "Diogo da Silva <diogoviniciussilva.dev@gmail.com>",
   "type": "module",
   "scripts": {
-    "test": "echo \\\"Error: no test specified\\\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
@@ -31,13 +32,19 @@
     "studio": "node scripts/prisma-studio.mjs"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/express": "^5.0.6",
+    "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^30.0.1",
     "prisma": "^7.10.0",
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
-    "vite": "^8.1.2"
+    "vite": "^8.1.2",
+    "vitest": "^4.1.11"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.10.0",
@@ -54,5 +61,8 @@
     "@prisma/engines@7.10.0": true,
     "esbuild@0.28.2": true,
     "prisma@7.10.0": true
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.0"
   }
 }

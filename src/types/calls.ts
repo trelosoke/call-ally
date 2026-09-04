@@ -12,5 +12,6 @@ export type Call = {
     fullDesc: string, 
     dueDate: string, 
     priority?: Priority,
-    tags: Tag[]
+    tags: Tag[],
+    createdAt: string
 };

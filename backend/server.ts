@@ -17,7 +17,7 @@ app.get('/calls', async (req, res) => {
 });
 
 app.post('/calls', async (req, res) => {
-    const { title, smallDesc, fullDesc, dueDate, tags, priority }: Omit<Call, 'id'> = req.body;
+    const { title, smallDesc, fullDesc, dueDate, tags, priority }: Omit<Call, 'id' | 'createdAt'> = req.body;
 
     const createdCall = await prisma.call.create({
         data: {
@@ -30,8 +30,12 @@ app.post('/calls', async (req, res) => {
         }
     });
 
-    res.status(201).json(createdCall);
+    const formattedCall = {
+        ...createdCall,
+        tags: JSON.parse(createdCall.tags)
+    };
 
+    res.status(201).json(formattedCall);
 });
 
 app.listen(PORT, () => {

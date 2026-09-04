@@ -39,7 +39,7 @@ function CallForm({ onCallCreated }: CallFormProps) {
     function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        const formData: Omit<Call, 'id'> = {
+        const formData: Omit<Call, 'id' | 'createdAt'> = {
             title: title,
             smallDesc: smallDesc,
             fullDesc: fullDesc,
