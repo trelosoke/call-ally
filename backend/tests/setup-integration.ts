@@ -11,7 +11,7 @@ const TEST_DATABASE_URL = `file:${TEST_DB_PATH}`;
 
 export const prisma = createPrismaClient(TEST_DATABASE_URL);
 
-export async function setupTestDatabase() {
+export function setupTestDatabase() {
     console.log('Running migrations on test database...');
 
     const normalizedUrl = pathToFileURL(TEST_DB_PATH).href;
@@ -29,4 +29,12 @@ export async function setupTestDatabase() {
     );
 
     console.log('Test database ready!');
+}
+
+export async function clearDataBase() {
+    await prisma.call.deleteMany();
+}
+
+export async function teardownTestDataBase() {
+    await prisma.$disconnect();
 }
