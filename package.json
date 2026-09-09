@@ -27,8 +27,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "server": "node --import tsx backend/server.ts",
-    "pserver": "nodemon --ext ts --exec \"node --import tsx backend/server.ts\"",
+    "server": "node --import tsx backend/index.ts",
+    "pserver": "nodemon --ext ts --exec \"node --import tsx backend/index.ts\"",
     "studio": "node scripts/prisma-studio.mjs"
   },
   "devDependencies": {
