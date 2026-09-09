@@ -1,7 +1,7 @@
 import path from 'path';
-import { execFileSync } from 'child_process';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { fileURLToPath } from 'url';
 import { createPrismaClient } from '../lib/prisma-factory.ts';
+import { createApp } from '../server.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,30 +11,12 @@ const TEST_DATABASE_URL = `file:${TEST_DB_PATH}`;
 
 export const prisma = createPrismaClient(TEST_DATABASE_URL);
 
-export function setupTestDatabase() {
-    console.log('Running migrations on test database...');
+export const app = createApp(prisma);
 
-    const normalizedUrl = pathToFileURL(TEST_DB_PATH).href;
-
-    const prismaEntry = new URL('../node_modules/prisma/build/index.js', import.meta.url);
-    const prismaPath = fileURLToPath(prismaEntry);
-
-    execFileSync(
-        process.execPath,
-        [prismaPath, 'migrate', 'deploy'],
-        {
-            env: { ...process.env, DATABASE_URL: normalizedUrl },
-            stdio: 'inherit'
-        }
-    );
-
-    console.log('Test database ready!');
-}
-
-export async function clearDataBase() {
+export async function clearDatabase() {
     await prisma.call.deleteMany();
 }
 
-export async function teardownTestDataBase() {
+export async function teardownTestDatabase() {
     await prisma.$disconnect();
 }
