@@ -1,5 +1,5 @@
 import express from 'express';
-import { PrismaClient } from '../src/generated/prisma/client.ts';
+import type { PrismaClient } from './generated/prisma/client.ts';
 import type { Call } from '../src/types/calls.ts';
 
 export function createApp(prisma: PrismaClient) {

@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../src/generated/prisma/client.ts';
+import { PrismaClient } from '../generated/prisma/client.ts';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 
 export function createPrismaClient(databaseUrl: string) {

@@ -3,4 +3,4 @@ dist/
 *.rar
 .env
 *.db
-src/generated/
+backend/generated/
