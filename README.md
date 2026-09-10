@@ -74,13 +74,13 @@ The app has two servers: the **backend** (Express API) and the **frontend** (Vit
 
 1. **Terminal 1 — Backend:**
    ```bash
-   npm run server
+   npm run dev:back
    ```
    The server will be available at [`http://localhost:3000`](http://localhost:3000).
 
 2. **Terminal 2 — Frontend:**
    ```bash
-   npm run dev
+   npm run dev:front
    ```
    The application will be available at [`http://localhost:5173`](http://localhost:5173).
 
@@ -114,21 +114,25 @@ The database file `dev.db` is created at the project root. Without it, the backe
 
 | Script      | Command               | Description |
 |-------------|-----------------------|-------------|
-| `dev`       | `npm run dev`         | Starts the frontend (Vite) |
-| `server`    | `npm run server`      | Runs the backend with `tsx` |
-| `pserver`   | `npm run pserver`     | Runs the backend with `tsx` and auto-restart (nodemon) |
+| `dev:front` | `npm run dev:front`   | Starts the frontend (Vite) |
+| `dev:back`  | `npm run dev:back`    | Runs the backend with `tsx` |
+| `dev:back:watch` | `npm run dev:back:watch` | Runs the backend with `tsx` and auto-restart (nodemon) |
 | `studio`    | `npm run studio`      | Opens Prisma Studio to browse and edit the database |
-| `test`      | `npm test`            | Runs the unit tests once (Vitest) |
-| `test:watch`| `npm run test:watch`  | Runs the unit tests in watch mode |
+| `test`      | `npm test`            | Runs all tests (Vitest) |
+| `test:unit` | `npm run test:unit`   | Runs only the unit tests |
+| `test:integ`| `npm run test:integ`  | Runs only the integration tests |
+| `test:watch`| `npm run test:watch`  | Runs the tests in watch mode |
 
 ---
 
-### 🧪 Running the Unit Tests
+### 🧪 Running the Tests
 
 The service layer is tested with **Vitest**. Tests run on the **Node** environment by default, so they are fast and do not load a DOM.
 
 ```bash
-npm test
+npm test          # all tests (unit + integration)
+npm run test:unit # only unit tests
+npm run test:integ # only integration tests
 ```
 
 For watch mode during development:
@@ -192,7 +196,7 @@ curl -X POST http://localhost:3000/calls \
 
 ### 🔗 Full Integration Test
 
-1. Run both the frontend (`npm run dev`) and backend (`npm run server`).
+1. Run both the frontend (`npm run dev:front`) and backend (`npm run dev:back`).
 2. Open the frontend at `http://localhost:5173`.
 3. Create a new call via the form.
 4. The call should appear in the list **without** refreshing the page.
@@ -211,7 +215,7 @@ curl -X POST http://localhost:3000/calls \
 - **Database persistence** — Calls are stored in a **SQLite** database via **Prisma ORM**, so data survives server restarts and page refreshes.
 - **Migrations** — Schema changes are tracked as migrations in `prisma/migrations` and applied with `npx prisma migrate dev`.
 - **Prisma Studio** — Browse and edit the database visually with `npm run studio`.
-- **Convenient scripts** — `npm run server` (backend), `npm run pserver` (backend with auto-restart) and `npm run studio` (database UI).
+- **Convenient scripts** — `npm run dev:back` (backend), `npm run dev:back:watch` (backend with auto-restart) and `npm run studio` (database UI).
 - **Unit tests** — The service layer is covered with Vitest, running on the Node environment without loading a DOM. Run with `npm test`; also executed in CI.
 - **Test setup scoped by environment** — Pure logic tests run on `node`; component tests can opt into `jsdom` per file with `// @vitest-environment jsdom`.
 
@@ -406,13 +410,13 @@ O aplicativo tem dois servidores: o **backend** (API Express) e o **frontend** (
 
 1. **Terminal 1 — Backend:**
    ```bash
-   npm run server
+   npm run dev:back
    ```
    O servidor estará disponível em [`http://localhost:3000`](http://localhost:3000).
 
 2. **Terminal 2 — Frontend:**
    ```bash
-   npm run dev
+   npm run dev:front
    ```
    A aplicação estará disponível em [`http://localhost:5173`](http://localhost:5173).
 
@@ -446,21 +450,25 @@ O arquivo do banco `dev.db` é criado na raiz do projeto. Sem ele, o backend ini
 
 | Script      | Comando               | Descrição |
 |-------------|-----------------------|-----------|
-| `dev`       | `npm run dev`         | Inicia o frontend (Vite) |
-| `server`    | `npm run server`      | Roda o backend com `tsx` |
-| `pserver`   | `npm run pserver`     | Roda o backend com `tsx` e reinício automático (nodemon) |
+| `dev:front` | `npm run dev:front`   | Inicia o frontend (Vite) |
+| `dev:back`  | `npm run dev:back`    | Roda o backend com `tsx` |
+| `dev:back:watch` | `npm run dev:back:watch` | Roda o backend com `tsx` e reinício automático (nodemon) |
 | `studio`    | `npm run studio`      | Abre o Prisma Studio para navegar e editar o banco |
-| `test`      | `npm test`            | Roda os testes unitários uma vez (Vitest) |
-| `test:watch`| `npm run test:watch`  | Roda os testes unitários em modo watch |
+| `test`      | `npm test`            | Roda todos os testes (Vitest) |
+| `test:unit` | `npm run test:unit`   | Roda apenas os testes unitários |
+| `test:integ`| `npm run test:integ`  | Roda apenas os testes de integração |
+| `test:watch`| `npm run test:watch`  | Roda os testes em modo watch |
 
 ---
 
-### 🧪 Rodando os Testes Unitários
+### 🧪 Rodando os Testes
 
 A camada de serviços é testada com **Vitest**. Os testes rodam no ambiente **Node** por padrão, então são rápidos e não carregam DOM.
 
 ```bash
-npm test
+npm test           # todos os testes (unitários + integração)
+npm run test:unit  # apenas testes unitários
+npm run test:integ # apenas testes de integração
 ```
 
 Para o modo watch durante o desenvolvimento:
@@ -524,7 +532,7 @@ curl -X POST http://localhost:3000/calls \
 
 ### 🔗 Teste de Integração Completo
 
-1. Execute tanto o frontend (`npm run dev`) quanto o backend (`npm run server`).
+1. Execute tanto o frontend (`npm run dev:front`) quanto o backend (`npm run dev:back`).
 2. Abra o frontend em `http://localhost:5173`.
 3. Crie um novo chamado através do formulário.
 4. O chamado deve aparecer na lista **sem** recarregar a página.
@@ -545,7 +553,7 @@ curl -X POST http://localhost:3000/calls \
 - **Persistência no banco de dados** — Os chamados são armazenados em um banco **SQLite** via **Prisma ORM**, então os dados sobrevivem a reinícios do servidor e recarregamentos da página.
 - **Migrações** — Mudanças no schema são rastreadas como migrações em `prisma/migrations` e aplicadas com `npx prisma migrate dev`.
 - **Prisma Studio** — Navegue e edite o banco visualmente com `npm run studio`.
-- **Scripts convenientes** — `npm run server` (backend), `npm run pserver` (backend com reinício automático) e `npm run studio` (interface do banco).
+- **Scripts convenientes** — `npm run dev:back` (backend), `npm run dev:back:watch` (backend com reinício automático) e `npm run studio` (interface do banco).
 - **Testes unitários** — A camada de serviços é coberta com Vitest, rodando no ambiente Node sem carregar DOM. Execute com `npm test`; também roda no CI.
 - **Setup de testes por ambiente** — Testes de lógica pura rodam em `node`; testes de componente podem optar pelo `jsdom` por arquivo com `// @vitest-environment jsdom`.
 
