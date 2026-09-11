@@ -1,5 +1,5 @@
 import { execFileSync } from 'child_process';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { fileURLToPath } from 'url';
 import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,8 +10,8 @@ const TEST_DB_PATH = path.join(__dirname, '../../prisma/test.db');
 export default function setup() {
   console.log('Running migrations on test database...');
 
-  const normalizedUrl = pathToFileURL(TEST_DB_PATH).href;
-  const prismaEntry = new URL('../node_modules/prisma/build/index.js', import.meta.url);
+  const normalizedUrl = `file:${TEST_DB_PATH.replace(/\\/g, '/')}`;
+  const prismaEntry = new URL('../../node_modules/prisma/build/index.js', import.meta.url);
   const prismaPath = fileURLToPath(prismaEntry);
 
   execFileSync(

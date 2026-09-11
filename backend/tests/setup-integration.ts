@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const TEST_DB_PATH = path.join(__dirname, '../../prisma/test.db');
-const TEST_DATABASE_URL = `file:${TEST_DB_PATH}`;
+const TEST_DATABASE_URL = `file:${TEST_DB_PATH.replace(/\\/g, '/')}`;
 
 export const prisma = createPrismaClient(TEST_DATABASE_URL);
 
