@@ -16,7 +16,7 @@ export function createApp(prisma: PrismaClient) {
 
         const createdCall = await prisma.call.create({
             data: {
-                title: title,
+                title: title.trim(),
                 smallDesc: smallDesc,
                 fullDesc: fullDesc,
                 dueDate: dueDate,
