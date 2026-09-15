@@ -74,13 +74,13 @@ The app has two servers: the **backend** (Express API) and the **frontend** (Vit
 
 1. **Terminal 1 — Backend:**
    ```bash
-   npm run server
+   npm run dev:back
    ```
    The server will be available at [`http://localhost:3000`](http://localhost:3000).
 
 2. **Terminal 2 — Frontend:**
    ```bash
-   npm run dev
+   npm run dev:front
    ```
    The application will be available at [`http://localhost:5173`](http://localhost:5173).
 
@@ -114,22 +114,34 @@ The database file `dev.db` is created at the project root. Without it, the backe
 
 | Script      | Command               | Description |
 |-------------|-----------------------|-------------|
-| `dev`       | `npm run dev`         | Starts the frontend (Vite) |
-| `server`    | `npm run server`      | Runs the backend with `tsx` |
-| `pserver`   | `npm run pserver`     | Runs the backend with `tsx` and auto-restart (nodemon) |
+| `dev:front` | `npm run dev:front`   | Starts the frontend (Vite) |
+| `dev:back`  | `npm run dev:back`    | Runs the backend with `tsx` |
+| `dev:back:watch` | `npm run dev:back:watch` | Runs the backend with `tsx` and auto-restart (nodemon) |
+| `build`     | `npm run build`       | Type-checks and builds the frontend into `dist/` |
+| `preview`   | `npm run preview`     | Serves the production build locally |
+| `typecheck` | `npm run typecheck`   | Type-checks the frontend and the backend |
+| `typecheck:front` | `npm run typecheck:front` | Type-checks the frontend only |
+| `typecheck:back`  | `npm run typecheck:back`  | Type-checks the backend only |
 | `studio`    | `npm run studio`      | Opens Prisma Studio to browse and edit the database |
-| `test`      | `npm test`            | Runs the unit tests once (Vitest) |
-| `test:watch`| `npm run test:watch`  | Runs the unit tests in watch mode |
+| `test`      | `npm test`            | Runs all tests (Vitest) |
+| `test:unit` | `npm run test:unit`   | Runs only the unit tests |
+| `test:integ`| `npm run test:integ`  | Runs only the integration tests |
+| `test:watch`| `npm run test:watch`  | Runs the tests in watch mode |
 
 ---
 
-### 🧪 Running the Unit Tests
+### 🧪 Running the Tests
 
-The service layer is tested with **Vitest**. Tests run on the **Node** environment by default, so they are fast and do not load a DOM.
+Tests are written with **Vitest** and split into two projects (`unit` and `integration`) in `vitest.config.ts`. Both run on the **Node** environment by default, so they are fast and do not load a DOM.
 
 ```bash
-npm test
+npm test           # all tests (unit + integration)
+npm run test:unit  # only unit tests
+npm run test:integ # only integration tests
 ```
+
+- **Unit tests** are collocated with the code they cover (e.g., `src/services/calls-service.test.ts`) and mock external dependencies.
+- **Integration tests** live in `backend/tests/integration/` and exercise the Express API through `supertest` against an **isolated SQLite database** (`prisma/test.db`). Migrations are applied by `backend/tests/global-setup.ts` before the suite runs.
 
 For watch mode during development:
 
@@ -137,7 +149,7 @@ For watch mode during development:
 npm run test:watch
 ```
 
-> **Note:** Tests are collocated next to the code they cover (e.g., `src/services/calls-service.test.ts`). Component tests may opt into a DOM environment with a `// @vitest-environment jsdom` comment at the top of the file.
+> **Note:** Run `npx prisma generate` before the tests (and after any schema change) so the Prisma Client is available. Component tests can opt into a DOM environment with a `// @vitest-environment jsdom` comment at the top of the file.
 
 ---
 
@@ -192,7 +204,7 @@ curl -X POST http://localhost:3000/calls \
 
 ### 🔗 Full Integration Test
 
-1. Run both the frontend (`npm run dev`) and backend (`npm run server`).
+1. Run both the frontend (`npm run dev:front`) and backend (`npm run dev:back`).
 2. Open the frontend at `http://localhost:5173`.
 3. Create a new call via the form.
 4. The call should appear in the list **without** refreshing the page.
@@ -211,8 +223,9 @@ curl -X POST http://localhost:3000/calls \
 - **Database persistence** — Calls are stored in a **SQLite** database via **Prisma ORM**, so data survives server restarts and page refreshes.
 - **Migrations** — Schema changes are tracked as migrations in `prisma/migrations` and applied with `npx prisma migrate dev`.
 - **Prisma Studio** — Browse and edit the database visually with `npm run studio`.
-- **Convenient scripts** — `npm run server` (backend), `npm run pserver` (backend with auto-restart) and `npm run studio` (database UI).
+- **Convenient scripts** — `npm run dev:back` (backend), `npm run dev:back:watch` (backend with auto-restart) and `npm run studio` (database UI).
 - **Unit tests** — The service layer is covered with Vitest, running on the Node environment without loading a DOM. Run with `npm test`; also executed in CI.
+- **Integration tests** — The Express API is tested end-to-end with `supertest` against an isolated SQLite database. Run with `npm run test:integ`; also executed in CI.
 - **Test setup scoped by environment** — Pure logic tests run on `node`; component tests can opt into `jsdom` per file with `// @vitest-environment jsdom`.
 
 ---
@@ -222,10 +235,18 @@ curl -X POST http://localhost:3000/calls \
 ```
 call-ally/
 ├─ .github/workflows/
-│  └─ ci.yml                   # CI pipeline (typecheck + build + unit tests)
+│  └─ ci.yml                   # CI pipeline (prisma generate + typecheck + build + tests)
 ├─ .agents/                    # AI agent skills (Prisma, generated by prisma init)
 ├─ backend/
-│  └─ server.ts                # Express server using the Prisma Client
+│  ├─ index.ts                 # Entry point: wires the app with Prisma and starts the server
+│  ├─ server.ts                # Express app factory (createApp) using the Prisma Client
+│  ├─ lib/
+│  │  └─ prisma-factory.ts     # Prisma Client factory (dependency injection)
+│  └─ tests/
+│     ├─ global-setup.ts       # Applies migrations to the isolated test database
+│     ├─ setup-integration.ts  # App + test Prisma client and database helpers
+│     ├─ helpers/              # Test payload/request helpers
+│     └─ integration/          # API integration tests (supertest)
 ├─ prisma/
 │  ├─ schema.prisma            # Prisma schema (Call model and generator)
 │  └─ migrations/              # SQL migration history
@@ -247,8 +268,11 @@ call-ally/
 ├─ package.json                # Project metadata, scripts and dependencies
 ├─ prisma.config.ts            # Prisma configuration (datasource URL and migrations path)
 ├─ README.md                   # Project documentation
-├─ tsconfig.json               # TypeScript compiler configuration
-├─ vite.config.js              # Vite configuration (dev server, /api proxy and Vitest)
+├─ tsconfig.json               # Shared TypeScript base configuration
+├─ tsconfig.frontend.json      # TypeScript configuration for the frontend
+├─ tsconfig.backend.json       # TypeScript configuration for the backend
+├─ vite.config.js              # Vite configuration (dev server and /api proxy)
+├─ vitest.config.ts            # Vitest configuration (unit and integration projects)
 └─ vitest-setup.ts             # Vitest setup (loads jest-dom only in DOM environments)
 ```
 
@@ -261,12 +285,13 @@ call-ally/
 | `src/services/`   | Data access layer that abstracts where data comes from. UI never touches the source directly. Currently uses `fetch` to communicate with the backend API. Collocated `*.test.ts` files hold the Vitest unit tests. |
 | `src/styles/`     | Global CSS shared by the whole app. |
 | `src/types/`      | Domain types used everywhere. They define the contract between frontend and the backend, so their shape must match what the API returns. |
-| `src/generated/`  | Prisma Client generated by `npx prisma generate`. Git-ignored; regenerate after schema changes. |
-| `backend/`        | REST API source code. Contains the Express server, route definitions, and the Prisma Client that persists data in the SQLite database. |
+| `backend/generated/`  | Prisma Client generated by `npx prisma generate`. Git-ignored; regenerate after schema changes. |
+| `backend/`        | REST API source code: the `index.ts` entry point, the `createApp` factory in `server.ts`, the Prisma Client factory in `lib/`, and the tests in `tests/`. |
+| `backend/tests/`  | Backend test suite: the global setup that migrates the isolated test database, the integration setup/helpers, and the API integration tests. |
 | `prisma/`         | Prisma schema (`schema.prisma`) and the SQL migrations that evolve the database. |
 | `scripts/`        | Helper scripts. `prisma-studio.mjs` launches Prisma Studio with the correct SQLite file URL. |
 | `.agents/`        | AI agent skills (Prisma CLI/Client documentation) consumed by coding agents. |
-| `.github/workflows`        | CI/CD configuration. The `ci.yml` file defines the continuous integration pipeline, which runs type checks, builds, and unit tests on every push or pull request to the `main` branch. |
+| `.github/workflows`        | CI/CD configuration. The `ci.yml` file runs `prisma generate`, type checks, the build, and all tests on every push or pull request to the `main` branch. |
 | `vitest-setup.ts` | Vitest setup file. Loads `jest-dom` matchers only when the running test environment has a DOM (`jsdom`). |
 
 ---
@@ -312,7 +337,7 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
 - [x] [#25](https://github.com/trelosoke/call-ally/pull/25) Add GitHub Actions workflow for frontend typecheck and build (PR)
 - [ ] [#14](https://github.com/trelosoke/call-ally/issues/14) Maintain and Update README During Backend Development
 - [x] [#15](https://github.com/trelosoke/call-ally/issues/15) Implement Basic Unit Testing
-- [ ] [#16](https://github.com/trelosoke/call-ally/issues/16) Implement API Integration Tests
+- [x] [#16](https://github.com/trelosoke/call-ally/issues/16) Implement API Integration Tests
 - [ ] [#17](https://github.com/trelosoke/call-ally/issues/17) Standardize Environment Variables and Configuration
 - [ ] [#18](https://github.com/trelosoke/call-ally/issues/18) Add API Documentation (OpenAPI / Markdown)
 - [ ] [#19](https://github.com/trelosoke/call-ally/issues/19) Implement Structured Logging and Error Handling
@@ -406,13 +431,13 @@ O aplicativo tem dois servidores: o **backend** (API Express) e o **frontend** (
 
 1. **Terminal 1 — Backend:**
    ```bash
-   npm run server
+   npm run dev:back
    ```
    O servidor estará disponível em [`http://localhost:3000`](http://localhost:3000).
 
 2. **Terminal 2 — Frontend:**
    ```bash
-   npm run dev
+   npm run dev:front
    ```
    A aplicação estará disponível em [`http://localhost:5173`](http://localhost:5173).
 
@@ -446,22 +471,34 @@ O arquivo do banco `dev.db` é criado na raiz do projeto. Sem ele, o backend ini
 
 | Script      | Comando               | Descrição |
 |-------------|-----------------------|-----------|
-| `dev`       | `npm run dev`         | Inicia o frontend (Vite) |
-| `server`    | `npm run server`      | Roda o backend com `tsx` |
-| `pserver`   | `npm run pserver`     | Roda o backend com `tsx` e reinício automático (nodemon) |
+| `dev:front` | `npm run dev:front`   | Inicia o frontend (Vite) |
+| `dev:back`  | `npm run dev:back`    | Roda o backend com `tsx` |
+| `dev:back:watch` | `npm run dev:back:watch` | Roda o backend com `tsx` e reinício automático (nodemon) |
+| `build`     | `npm run build`       | Verifica os tipos e builda o frontend em `dist/` |
+| `preview`   | `npm run preview`     | Serve o build de produção localmente |
+| `typecheck` | `npm run typecheck`   | Verifica os tipos do frontend e do backend |
+| `typecheck:front` | `npm run typecheck:front` | Verifica os tipos apenas do frontend |
+| `typecheck:back`  | `npm run typecheck:back`  | Verifica os tipos apenas do backend |
 | `studio`    | `npm run studio`      | Abre o Prisma Studio para navegar e editar o banco |
-| `test`      | `npm test`            | Roda os testes unitários uma vez (Vitest) |
-| `test:watch`| `npm run test:watch`  | Roda os testes unitários em modo watch |
+| `test`      | `npm test`            | Roda todos os testes (Vitest) |
+| `test:unit` | `npm run test:unit`   | Roda apenas os testes unitários |
+| `test:integ`| `npm run test:integ`  | Roda apenas os testes de integração |
+| `test:watch`| `npm run test:watch`  | Roda os testes em modo watch |
 
 ---
 
-### 🧪 Rodando os Testes Unitários
+### 🧪 Rodando os Testes
 
-A camada de serviços é testada com **Vitest**. Os testes rodam no ambiente **Node** por padrão, então são rápidos e não carregam DOM.
+Os testes são escritos com **Vitest** e divididos em dois projetos (`unit` e `integration`) em `vitest.config.ts`. Ambos rodam no ambiente **Node** por padrão, então são rápidos e não carregam DOM.
 
 ```bash
-npm test
+npm test           # todos os testes (unitários + integração)
+npm run test:unit  # apenas testes unitários
+npm run test:integ # apenas testes de integração
 ```
+
+- **Testes unitários** ficam ao lado do código que cobrem (ex.: `src/services/calls-service.test.ts`) e simulam dependências externas.
+- **Testes de integração** ficam em `backend/tests/integration/` e exercitam a API Express via `supertest` contra um **banco SQLite isolado** (`prisma/test.db`). As migrações são aplicadas por `backend/tests/global-setup.ts` antes da suíte rodar.
 
 Para o modo watch durante o desenvolvimento:
 
@@ -469,7 +506,7 @@ Para o modo watch durante o desenvolvimento:
 npm run test:watch
 ```
 
-> **Nota:** Os testes ficam ao lado do código que cobrem (ex.: `src/services/calls-service.test.ts`). Testes de componente podem optar por um ambiente DOM com o comentário `// @vitest-environment jsdom` no topo do arquivo.
+> **Nota:** Rode `npx prisma generate` antes dos testes (e após qualquer mudança no schema) para o Prisma Client estar disponível. Testes de componente podem optar por um ambiente DOM com o comentário `// @vitest-environment jsdom` no topo do arquivo.
 
 ---
 
@@ -524,7 +561,7 @@ curl -X POST http://localhost:3000/calls \
 
 ### 🔗 Teste de Integração Completo
 
-1. Execute tanto o frontend (`npm run dev`) quanto o backend (`npm run server`).
+1. Execute tanto o frontend (`npm run dev:front`) quanto o backend (`npm run dev:back`).
 2. Abra o frontend em `http://localhost:5173`.
 3. Crie um novo chamado através do formulário.
 4. O chamado deve aparecer na lista **sem** recarregar a página.
@@ -545,8 +582,9 @@ curl -X POST http://localhost:3000/calls \
 - **Persistência no banco de dados** — Os chamados são armazenados em um banco **SQLite** via **Prisma ORM**, então os dados sobrevivem a reinícios do servidor e recarregamentos da página.
 - **Migrações** — Mudanças no schema são rastreadas como migrações em `prisma/migrations` e aplicadas com `npx prisma migrate dev`.
 - **Prisma Studio** — Navegue e edite o banco visualmente com `npm run studio`.
-- **Scripts convenientes** — `npm run server` (backend), `npm run pserver` (backend com reinício automático) e `npm run studio` (interface do banco).
+- **Scripts convenientes** — `npm run dev:back` (backend), `npm run dev:back:watch` (backend com reinício automático) e `npm run studio` (interface do banco).
 - **Testes unitários** — A camada de serviços é coberta com Vitest, rodando no ambiente Node sem carregar DOM. Execute com `npm test`; também roda no CI.
+- **Testes de integração** — A API Express é testada ponta a ponta com `supertest` contra um banco SQLite isolado. Execute com `npm run test:integ`; também roda no CI.
 - **Setup de testes por ambiente** — Testes de lógica pura rodam em `node`; testes de componente podem optar pelo `jsdom` por arquivo com `// @vitest-environment jsdom`.
 
 ---
@@ -556,10 +594,18 @@ curl -X POST http://localhost:3000/calls \
 ```
 call-ally/
 ├─ .github/workflows/
-│  └─ ci.yml                   # Pipeline de CI (typecheck, build e testes)
+│  └─ ci.yml                   # Pipeline de CI (prisma generate + typecheck + build + testes)
 ├─ .agents/                    # Skills de agentes de IA (Prisma, geradas pelo prisma init)
 ├─ backend/
-│  └─ server.ts                # Servidor Express usando o Prisma Client
+│  ├─ index.ts                 # Ponto de entrada: conecta o app ao Prisma e inicia o servidor
+│  ├─ server.ts                # Fábrica do app Express (createApp) usando o Prisma Client
+│  ├─ lib/
+│  │  └─ prisma-factory.ts     # Fábrica do Prisma Client (injeção de dependência)
+│  └─ tests/
+│     ├─ global-setup.ts       # Aplica as migrações no banco de teste isolado
+│     ├─ setup-integration.ts  # App + Prisma Client de teste e helpers de banco
+│     ├─ helpers/              # Helpers de payload/requisição dos testes
+│     └─ integration/          # Testes de integração da API (supertest)
 ├─ prisma/
 │  ├─ schema.prisma            # Schema do Prisma (modelo Call e generator)
 │  └─ migrations/              # Histórico de migrações SQL
@@ -581,8 +627,11 @@ call-ally/
 ├─ package.json                # Metadados, scripts e dependências do projeto
 ├─ prisma.config.ts            # Configuração do Prisma (URL do datasource e caminho das migrações)
 ├─ README.md                   # Documentação do projeto
-├─ tsconfig.json               # Configuração do compilador TypeScript
-├─ vite.config.js              # Configuração do Vite (servidor de desenvolvimento, proxy /api e Vitest)
+├─ tsconfig.json               # Configuração base compartilhada do TypeScript
+├─ tsconfig.frontend.json      # Configuração do TypeScript para o frontend
+├─ tsconfig.backend.json       # Configuração do TypeScript para o backend
+├─ vite.config.js              # Configuração do Vite (servidor de desenvolvimento e proxy /api)
+├─ vitest.config.ts            # Configuração do Vitest (projetos unit e integration)
 └─ vitest-setup.ts             # Setup do Vitest (carrega jest-dom apenas em ambientes com DOM)
 ```
 
@@ -595,12 +644,13 @@ call-ally/
 | `src/services/`   | Camada de acesso a dados que abstrai a origem dos dados. A interface nunca acessa a fonte diretamente. Atualmente usa `fetch` para se comunicar com a API do backend. Arquivos `*.test.ts` colocalizados contêm os testes unitários (Vitest). |
 | `src/styles/`     | CSS global compartilhado por toda a aplicação. |
 | `src/types/`      | Tipos de domínio usados em toda a aplicação. Eles definem o contrato entre o frontend e o backend, portanto sua estrutura deve corresponder ao que a API retorna. |
-| `src/generated/`  | Prisma Client gerado por `npx prisma generate`. Ignorado pelo Git; regenere após mudanças no schema. |
-| `backend/`        | Código-fonte da API REST. Contém o servidor Express, as definições de rotas e o Prisma Client que persiste os dados no banco SQLite. |
+| `backend/generated/`  | Prisma Client gerado por `npx prisma generate`. Ignorado pelo Git; regenere após mudanças no schema. |
+| `backend/`        | Código-fonte da API REST: o ponto de entrada `index.ts`, a fábrica `createApp` em `server.ts`, a fábrica do Prisma Client em `lib/` e os testes em `tests/`. |
+| `backend/tests/`  | Suíte de testes do backend: o setup global que migra o banco de teste isolado, o setup/helpers de integração e os testes de integração da API. |
 | `prisma/`         | Schema do Prisma (`schema.prisma`) e as migrações SQL que evoluem o banco de dados. |
 | `scripts/`        | Scripts auxiliares. `prisma-studio.mjs` abre o Prisma Studio com a URL correta do arquivo SQLite. |
 | `.agents/`        | Skills de agentes de IA (documentação do Prisma CLI/Client) consumidas por agentes de codificação. |
-| `.github/workflows` | Configuração de CI/CD. O arquivo `ci.yml` define o pipeline de integração contínua, que executa verificações de tipo, build e testes unitários a cada `push` ou `pull request` para a branch `main`. |
+| `.github/workflows` | Configuração de CI/CD. O arquivo `ci.yml` executa `prisma generate`, verificação de tipos, build e todos os testes a cada `push` ou `pull request` para a branch `main`. |
 | `vitest-setup.ts` | Arquivo de setup do Vitest. Carrega os matchers do `jest-dom` apenas quando o ambiente de teste em execução tem DOM (`jsdom`). |
 
 ---
@@ -646,7 +696,7 @@ O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada 
 - [x] [#25](https://github.com/trelosoke/call-ally/pull/25) Adicionar workflow do GitHub Actions para typecheck e build do frontend (PR)
 - [ ] [#14](https://github.com/trelosoke/call-ally/issues/14) Manter e atualizar o README durante o desenvolvimento do backend
 - [x] [#15](https://github.com/trelosoke/call-ally/issues/15) Implementar testes unitários básicos
-- [ ] [#16](https://github.com/trelosoke/call-ally/issues/16) Implementar testes de integração da API
+- [x] [#16](https://github.com/trelosoke/call-ally/issues/16) Implementar testes de integração da API
 - [ ] [#17](https://github.com/trelosoke/call-ally/issues/17) Padronizar variáveis de ambiente e configuração
 - [ ] [#18](https://github.com/trelosoke/call-ally/issues/18) Adicionar documentação da API (OpenAPI / Markdown)
 - [ ] [#19](https://github.com/trelosoke/call-ally/issues/19) Implementar logging estruturado e tratamento de erros

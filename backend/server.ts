@@ -1,43 +1,44 @@
-import 'dotenv/config';
 import express from 'express';
-import { PrismaClient } from '../src/generated/prisma/client.ts';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
-import { Call } from '../src/types/calls.ts';
+import type { PrismaClient } from './generated/prisma/client.ts';
+import type { Call } from '../src/types/calls.ts';
 
-const app = express();
-const PORT = 3000;
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter });
+export function createApp(prisma: PrismaClient) {
+    const app = express();
+    app.use(express.json());
 
-app.use(express.json());
-
-app.get('/calls', async (req, res) => {
-    const calls = await prisma.call.findMany();
-    res.status(200).json(calls);
-});
-
-app.post('/calls', async (req, res) => {
-    const { title, smallDesc, fullDesc, dueDate, tags, priority }: Omit<Call, 'id' | 'createdAt'> = req.body;
-
-    const createdCall = await prisma.call.create({
-        data: {
-            title: title,
-            smallDesc: smallDesc,
-            fullDesc: fullDesc,
-            dueDate: dueDate,
-            tags: JSON.stringify(tags),
-            priority: priority
-        }
+    app.get('/calls', async (req, res) => {
+        const calls = await prisma.call.findMany({orderBy: { createdAt: 'desc' }});
+        res.status(200).json(calls.map(call => ({
+            ...call,
+            tags: call.tags ? JSON.parse(call.tags) : []
+        })));
     });
 
-    const formattedCall = {
-        ...createdCall,
-        tags: JSON.parse(createdCall.tags)
-    };
+    app.post('/calls', async (req, res) => {
+        const { title, smallDesc, fullDesc, dueDate, tags, priority }: Omit<Call, 'id' | 'createdAt'> = req.body;
 
-    res.status(201).json(formattedCall);
-});
+        if (!title || title.trim() === '') {
+            return res.status(400).json({error: 'Title is required'});
+        }
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+        const createdCall = await prisma.call.create({
+            data: {
+                title: title.trim(),
+                smallDesc: smallDesc,
+                fullDesc: fullDesc,
+                dueDate: dueDate,
+                tags: JSON.stringify(tags),
+                priority: priority
+            }
+        });
+
+        const formattedCall = {
+            ...createdCall,
+            tags: JSON.parse(createdCall.tags)
+        };
+
+        res.status(201).json(formattedCall);
+    });
+
+    return app;
+}
