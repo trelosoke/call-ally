@@ -30,7 +30,7 @@ jobs:
         run: npm run typecheck
 
       - name: Build
-        run: npx vite build
+        run: npm run build --silent
 
       - name: Unit and Integration tests
         run: npm run test 
