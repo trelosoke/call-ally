@@ -10,9 +10,9 @@ generator client {
 model Call {
   id        String   @id @default(uuid())
   title     String
-  smallDesc String
-  fullDesc  String
-  dueDate   String
+  smallDesc String?
+  fullDesc  String?
+  dueDate   String?
   priority  String?
   tags      String
   createdAt DateTime @default(now())
