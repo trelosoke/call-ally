@@ -4,3 +4,4 @@ dist/
 .env
 *.db
 backend/generated/
+/TODO.md

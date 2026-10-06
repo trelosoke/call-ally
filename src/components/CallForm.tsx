@@ -41,10 +41,10 @@ function CallForm({ onCallCreated }: CallFormProps) {
 
         const formData: Omit<Call, 'id' | 'createdAt'> = {
             title: title,
-            smallDesc: smallDesc,
-            fullDesc: fullDesc,
-            dueDate: dueDate,
             tags: tags,
+            ...(smallDesc !== '' && { smallDesc }),
+            ...(fullDesc !== '' && { fullDesc }),
+            ...(dueDate !== '' && { dueDate }),
             ...(priority !== undefined && { priority })
         }
 
