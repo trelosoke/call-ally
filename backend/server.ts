@@ -27,7 +27,7 @@ export function createApp(prisma: PrismaClient) {
                 smallDesc: smallDesc,
                 fullDesc: fullDesc,
                 dueDate: dueDate,
-                tags: JSON.stringify(tags),
+                tags: JSON.stringify(tags) ?? '[]',
                 priority: priority
             }
         });
