@@ -298,7 +298,7 @@ call-ally/
 
 ## Next Steps
 
-The roadmap below is organized into milestones. Each one tracks its progress through the [milestones](https://github.com/trelosoke/call-ally/milestones) and [issues](https://github.com/trelosoke/call-ally/issues) opened on this repository.
+The roadmap below is organized into milestones. Each one tracks its progress through the [milestones](https://github.com/trelosoke/call-ally/milestones) and [issues](https://github.com/trelosoke/call-ally/issues) opened on this repository. Within each milestone, items are listed in the intended order of implementation.
 
 ### ✅ MVP Frontend (React Integration) — *completed*
 
@@ -313,7 +313,7 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
 
 ### 🚧 MVP Full-Stack (Backend + Database) — *in progress*
 
-> Replace the in-memory array with a real Node.js server and SQLite database. Quality and documentation tasks are being handled in parallel throughout this milestone. Due **Sep 21, 2026**.
+> Replace the in-memory array with a real Node.js server and a database. Quality and documentation tasks are handled in parallel throughout this milestone. Due **Oct 18, 2026**.
 
 - [x] [#7](https://github.com/trelosoke/call-ally/issues/7) Establish a Server with Basic Routing
 - [x] [#8](https://github.com/trelosoke/call-ally/issues/8) Connect the Frontend to the Real Server
@@ -324,29 +324,52 @@ The roadmap below is organized into milestones. Each one tracks its progress thr
 - [x] [#20](https://github.com/trelosoke/call-ally/issues/20) Set up Continuous Integration (CI) for the Frontend
 - [x] [#26](https://github.com/trelosoke/call-ally/pull/26) Implement HTTP server and frontend integration (PR)
 - [x] [#33](https://github.com/trelosoke/call-ally/pull/33) Implement persistent data with Prisma and SQLite (PR)
+- [x] [#54](https://github.com/trelosoke/call-ally/issues/54) Change the call contract to require only the title
+- [ ] [#41](https://github.com/trelosoke/call-ally/issues/41) Add React component tests (Vitest + Testing Library)
+- [ ] [#56](https://github.com/trelosoke/call-ally/issues/56) Refactor CallForm
 - [ ] [#21](https://github.com/trelosoke/call-ally/issues/21) Set up Continuous Integration (CI) for the Backend
 - [ ] [#22](https://github.com/trelosoke/call-ally/issues/22) Configure Continuous Deployment (CD) for the Full Stack Application
-- [ ] [#27](https://github.com/trelosoke/call-ally/issues/27) Finalize MVP Full-Stack with CI/CD and Deploy
+- [ ] [#27](https://github.com/trelosoke/call-ally/issues/27) Finalize MVP Full-Stack with CI/CD
 
 ### 📋 Quality & Documentation — *parallel to backend*
 
-> Documentation, testing, and configuration tasks are being addressed as part of the development process — they are not postponed to the end of the project. Due **Sep 27, 2026**.
+> Documentation, testing, and configuration tasks are being addressed as part of the development process — they are not postponed to the end of the project. Due **Oct 18, 2026**.
 
 - [x] [#13](https://github.com/trelosoke/call-ally/issues/13) Write Frontend README (Current State)
 - [x] [#24](https://github.com/trelosoke/call-ally/pull/24) Add README and MIT License (PR)
 - [x] [#25](https://github.com/trelosoke/call-ally/pull/25) Add GitHub Actions workflow for frontend typecheck and build (PR)
-- [ ] [#14](https://github.com/trelosoke/call-ally/issues/14) Maintain and Update README During Backend Development
 - [x] [#15](https://github.com/trelosoke/call-ally/issues/15) Implement Basic Unit Testing
 - [x] [#16](https://github.com/trelosoke/call-ally/issues/16) Implement API Integration Tests
+- [ ] [#58](https://github.com/trelosoke/call-ally/issues/58) Update tests for new contract
+- [ ] [#45](https://github.com/trelosoke/call-ally/issues/45) Add input validation with Zod schemas
 - [ ] [#17](https://github.com/trelosoke/call-ally/issues/17) Standardize Environment Variables and Configuration
 - [ ] [#18](https://github.com/trelosoke/call-ally/issues/18) Add API Documentation (OpenAPI / Markdown)
 - [ ] [#19](https://github.com/trelosoke/call-ally/issues/19) Implement Structured Logging and Error Handling
+- [ ] [#14](https://github.com/trelosoke/call-ally/issues/14) Maintain and Update README During Backend Development
 - [ ] [#23](https://github.com/trelosoke/call-ally/issues/23) Apply Styling with Tailwind CSS
 
 ### 🚀 Deploy & Infrastructure — *upcoming*
 
-> Make the CallAlly application publicly accessible by deploying the frontend, backend, and database to production environments.
+> Make the CallAlly application publicly accessible by deploying the frontend, backend, and database to production environments. Due **Dec 11, 2026**.
 
+- [ ] [#35](https://github.com/trelosoke/call-ally/issues/35) Migrate database from SQLite to PostgreSQL
+- [ ] [#36](https://github.com/trelosoke/call-ally/issues/36) Refactor to Dependency Inversion Principle (interfaces + services)
+- [ ] [#46](https://github.com/trelosoke/call-ally/issues/46) Centralized error handling middleware and production mode
+- [ ] [#42](https://github.com/trelosoke/call-ally/issues/42) Add HTTP security headers with Helmet
+- [ ] [#43](https://github.com/trelosoke/call-ally/issues/43) Configure CORS with origin whitelist
+- [ ] [#44](https://github.com/trelosoke/call-ally/issues/44) Add rate limiting and trust proxy
+- [ ] [#37](https://github.com/trelosoke/call-ally/issues/37) Implement complete CRUD operations (PUT, DELETE)
+- [ ] [#38](https://github.com/trelosoke/call-ally/issues/38) Implement JWT authentication
+- [ ] [#47](https://github.com/trelosoke/call-ally/issues/47) Enforce strong JWT secret in production
+- [ ] [#48](https://github.com/trelosoke/call-ally/issues/48) Implement frontend authentication flow (login, register, protected routes)
+- [ ] [#49](https://github.com/trelosoke/call-ally/issues/49) Implement landing page for unauthenticated users
+- [ ] [#50](https://github.com/trelosoke/call-ally/issues/50) Implement frontend CRUD operations (edit and delete calls)
+- [ ] [#51](https://github.com/trelosoke/call-ally/issues/51) Mirror backend validation rules in the frontend form
+- [ ] [#55](https://github.com/trelosoke/call-ally/issues/55) Add soft validation to the call form
+- [ ] [#57](https://github.com/trelosoke/call-ally/issues/57) Refactor the integration tests
+- [ ] [#52](https://github.com/trelosoke/call-ally/issues/52) Define the backend production runtime and static frontend serving
+- [ ] [#39](https://github.com/trelosoke/call-ally/issues/39) Set up production monitoring and observability
+- [ ] [#40](https://github.com/trelosoke/call-ally/issues/40) Configure performance testing (benchmark + load test)
 - [ ] [#28](https://github.com/trelosoke/call-ally/issues/28) Configure Production Database
 - [ ] [#29](https://github.com/trelosoke/call-ally/issues/29) Deploy Backend to Production
 - [ ] [#30](https://github.com/trelosoke/call-ally/issues/30) Deploy Frontend to Production
@@ -657,7 +680,7 @@ call-ally/
 
 ### Próximos Passos
 
-O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada um é acompanhado pelos [milestones](https://github.com/trelosoke/call-ally/milestones) e pelas [issues](https://github.com/trelosoke/call-ally/issues) abertas neste repositório.
+O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada um é acompanhado pelos [milestones](https://github.com/trelosoke/call-ally/milestones) e pelas [issues](https://github.com/trelosoke/call-ally/issues) abertas neste repositório. Dentro de cada marco, os itens estão listados na ordem de implementação prevista.
 
 #### ✅ MVP Frontend (Integração React) — *concluído*
 
@@ -672,7 +695,7 @@ O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada 
 
 #### 🚧 MVP Full-Stack (Backend + Banco de Dados) — *em andamento*
 
-> Substituir o array em memória por um servidor Node.js real e um banco de dados SQLite. As tarefas de qualidade e documentação são tratadas em paralelo ao longo deste marco. Prazo: **21 de set de 2026**.
+> Substituir o array em memória por um servidor Node.js real e um banco de dados. As tarefas de qualidade e documentação são tratadas em paralelo ao longo deste marco. Prazo: **18 de out de 2026**.
 
 - [x] [#7](https://github.com/trelosoke/call-ally/issues/7) Criar um servidor com roteamento básico
 - [x] [#8](https://github.com/trelosoke/call-ally/issues/8) Conectar o frontend ao servidor real
@@ -683,29 +706,52 @@ O roadmap abaixo está organizado em marcos (*milestones*). O progresso de cada 
 - [x] [#20](https://github.com/trelosoke/call-ally/issues/20) Configurar Integração Contínua (CI) para o frontend
 - [x] [#26](https://github.com/trelosoke/call-ally/pull/26) Implementar servidor HTTP e integração com o frontend (PR)
 - [x] [#33](https://github.com/trelosoke/call-ally/pull/33) Implementar dados persistentes com Prisma e SQLite (PR)
+- [ ] [#54](https://github.com/trelosoke/call-ally/issues/54) Alterar o contrato do chamado para exigir apenas o título
+- [ ] [#41](https://github.com/trelosoke/call-ally/issues/41) Adicionar testes de componentes React (Vitest + Testing Library)
+- [ ] [#56](https://github.com/trelosoke/call-ally/issues/56) Refatorar o CallForm
 - [ ] [#21](https://github.com/trelosoke/call-ally/issues/21) Configurar Integração Contínua (CI) para o backend
 - [ ] [#22](https://github.com/trelosoke/call-ally/issues/22) Configurar Implantação Contínua (CD) para a aplicação full-stack
-- [ ] [#27](https://github.com/trelosoke/call-ally/issues/27) Finalizar o MVP Full-Stack com CI/CD e Deploy
+- [ ] [#27](https://github.com/trelosoke/call-ally/issues/27) Finalizar o MVP Full-Stack com CI/CD
 
 #### 📋 Qualidade e Documentação — *em paralelo ao backend*
 
-> As tarefas de documentação, testes e configuração são tratadas como parte do processo de desenvolvimento — não são adiadas para o fim do projeto. Prazo: **27 de set de 2026**.
+> As tarefas de documentação, testes e configuração são tratadas como parte do processo de desenvolvimento — não são adiadas para o fim do projeto. Prazo: **18 de out de 2026**.
 
 - [x] [#13](https://github.com/trelosoke/call-ally/issues/13) Escrever README do frontend (estado atual)
 - [x] [#24](https://github.com/trelosoke/call-ally/pull/24) Adicionar README e licença MIT (PR)
 - [x] [#25](https://github.com/trelosoke/call-ally/pull/25) Adicionar workflow do GitHub Actions para typecheck e build do frontend (PR)
-- [ ] [#14](https://github.com/trelosoke/call-ally/issues/14) Manter e atualizar o README durante o desenvolvimento do backend
 - [x] [#15](https://github.com/trelosoke/call-ally/issues/15) Implementar testes unitários básicos
 - [x] [#16](https://github.com/trelosoke/call-ally/issues/16) Implementar testes de integração da API
+- [ ] [#58](https://github.com/trelosoke/call-ally/issues/58) Atualizar os testes para o novo contrato
+- [ ] [#45](https://github.com/trelosoke/call-ally/issues/45) Adicionar validação de entrada com schemas Zod
 - [ ] [#17](https://github.com/trelosoke/call-ally/issues/17) Padronizar variáveis de ambiente e configuração
 - [ ] [#18](https://github.com/trelosoke/call-ally/issues/18) Adicionar documentação da API (OpenAPI / Markdown)
 - [ ] [#19](https://github.com/trelosoke/call-ally/issues/19) Implementar logging estruturado e tratamento de erros
+- [ ] [#14](https://github.com/trelosoke/call-ally/issues/14) Manter e atualizar o README durante o desenvolvimento do backend
 - [ ] [#23](https://github.com/trelosoke/call-ally/issues/23) Aplicar estilização com Tailwind CSS
 
 #### 🚀 Deploy & Infraestrutura — *próximo*
 
-> Tornar o CallAlly publicamente acessível, implantando frontend, backend e banco de dados em ambientes de produção.
+> Tornar o CallAlly publicamente acessível, implantando frontend, backend e banco de dados em ambientes de produção. Prazo: **11 de dez de 2026**.
 
+- [ ] [#35](https://github.com/trelosoke/call-ally/issues/35) Migrar o banco de dados de SQLite para PostgreSQL
+- [ ] [#36](https://github.com/trelosoke/call-ally/issues/36) Refatorar para o Princípio da Inversão de Dependência (interfaces + serviços)
+- [ ] [#46](https://github.com/trelosoke/call-ally/issues/46) Middleware centralizado de tratamento de erros e modo de produção
+- [ ] [#42](https://github.com/trelosoke/call-ally/issues/42) Adicionar cabeçalhos de segurança HTTP com Helmet
+- [ ] [#43](https://github.com/trelosoke/call-ally/issues/43) Configurar CORS com whitelist de origens
+- [ ] [#44](https://github.com/trelosoke/call-ally/issues/44) Adicionar rate limiting e trust proxy
+- [ ] [#37](https://github.com/trelosoke/call-ally/issues/37) Implementar operações CRUD completas (PUT, DELETE)
+- [ ] [#38](https://github.com/trelosoke/call-ally/issues/38) Implementar autenticação JWT
+- [ ] [#47](https://github.com/trelosoke/call-ally/issues/47) Exigir segredo JWT forte em produção
+- [ ] [#48](https://github.com/trelosoke/call-ally/issues/48) Implementar fluxo de autenticação no frontend (login, registro, rotas protegidas)
+- [ ] [#49](https://github.com/trelosoke/call-ally/issues/49) Implementar landing page para usuários não autenticados
+- [ ] [#50](https://github.com/trelosoke/call-ally/issues/50) Implementar operações CRUD no frontend (editar e excluir chamados)
+- [ ] [#51](https://github.com/trelosoke/call-ally/issues/51) Espelhar as regras de validação do backend no formulário do frontend
+- [ ] [#55](https://github.com/trelosoke/call-ally/issues/55) Adicionar validação soft ao formulário de chamados
+- [ ] [#57](https://github.com/trelosoke/call-ally/issues/57) Refatorar os testes de integração
+- [ ] [#52](https://github.com/trelosoke/call-ally/issues/52) Definir o runtime de produção do backend e a entrega do frontend estático
+- [ ] [#39](https://github.com/trelosoke/call-ally/issues/39) Configurar monitoramento e observabilidade de produção
+- [ ] [#40](https://github.com/trelosoke/call-ally/issues/40) Configurar testes de performance (benchmark + load test)
 - [ ] [#28](https://github.com/trelosoke/call-ally/issues/28) Configurar o banco de dados de produção
 - [ ] [#29](https://github.com/trelosoke/call-ally/issues/29) Implantar o backend em produção
 - [ ] [#30](https://github.com/trelosoke/call-ally/issues/30) Implantar o frontend em produção
